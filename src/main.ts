@@ -34,6 +34,7 @@ do {
   }
 
   if (!process.argv.includes("no-loop")) {
-    sleep(3_600_000);
+    console.log("[MAIN] Waiting 1h...");
+    await sleep(3_600_000);
   }
 } while (!process.argv.includes("no-loop"));
