@@ -1,0 +1,38 @@
+import { qb } from "../clients/qb.js";
+import { ProtoPlugin } from "../models/proto-plugin.js";
+import { scrapeOfficialPlugins, scrapeLightDestoryPlugins } from "./scrape.js";
+
+export async function updatePlugins(): Promise<void> {
+  console.log("[UPD-PLUGINS] Start");
+
+  // await qb.checkLogin();
+  // await qb.api.updateSearchPlugins();
+
+  const protoPlugins = [
+    ...(await scrapeOfficialPlugins()),
+    ...(await scrapeLightDestoryPlugins()),
+  ].filter((p) => p.working);
+  const groupedPlugins = Object.groupBy(protoPlugins, (p) => p.name) as Record<
+    string,
+    ProtoPlugin[]
+  >;
+  const sources = Object.entries(groupedPlugins).map(([, v]) => {
+    v.sort((a, b) => b.updated - a.updated);
+    return v[0].download;
+  });
+
+  await qb.checkLogin();
+  const plugins = await qb.api.getSearchPlugins();
+
+  const names = plugins.map((p) => p.name);
+
+  // await qb.checkLogin();
+  // await qb.api.uninstallSearchPlugin(names);
+
+  // await qb.checkLogin();
+  // await qb.api.installSearchPlugin(sources);
+
+  console.log(sources);
+
+  console.log("[UPD-PLUGINS] End");
+}
