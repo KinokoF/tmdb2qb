@@ -1,7 +1,7 @@
 import { addMovies } from "./add-scan/add.js";
 import { scanMovies } from "./add-scan/scan.js";
+import { doChecks } from "./checks/checks.js";
 import { processMovies } from "./process/process.js";
-import { updateCategory } from "./upd-category/upd-category.js";
 import { updatePlugins } from "./upd-plugins/upd-plugins.js";
 import { sleep } from "./utils/utils.js";
 
@@ -21,8 +21,8 @@ do {
     await scanMovies();
   }
 
-  if (!process.argv.includes("no-upd-category")) {
-    await updateCategory();
+  if (!process.argv.includes("no-checks")) {
+    await doChecks();
   }
 
   if (!process.argv.includes("no-upd-plugins")) {

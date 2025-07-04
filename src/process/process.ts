@@ -2,6 +2,7 @@ import { RawTorrentV2 } from "../models/raw-torrent-v2.js";
 import { qb } from "../clients/qb.js";
 import { state } from "../state.js";
 import {
+  CATEGORY_NAME,
   MAX_DAYS_TO_COMPLETE_DOWNLOAD,
   SEARCH_RETRY_INTERVAL_IN_DAYS,
 } from "../utils/constants.js";
@@ -13,14 +14,14 @@ import {
   deleteTorrent,
 } from "./torrent.js";
 import { cleanUnsuccessSearch, onUnsuccessSearch } from "./unsuccess.js";
-import { nowMinusDays, readLibraries } from "../utils/utils.js";
+import { getTmdbTag, nowMinusDays, readLibraries } from "../utils/utils.js";
 
 export async function processMovies(): Promise<void> {
   console.log("[PROCESS] Start");
 
   await qb.checkLogin();
   const torrents = (await qb.api.getTorrents({
-    category: "Bot",
+    category: CATEGORY_NAME,
   })) as RawTorrentV2[];
 
   const searchRetryTime = nowMinusDays(SEARCH_RETRY_INTERVAL_IN_DAYS);
@@ -28,10 +29,10 @@ export async function processMovies(): Promise<void> {
 
   for (const movie of state.movies) {
     const torrent = torrents.find((t) =>
-      t.tags.split(",").includes(`tmdbid-${movie.id}`)
+      t.tags.split(",").includes(getTmdbTag(movie.id))
     );
     const file = readLibraries().find((f) =>
-      f.includes(`[tmdbid-${movie.id}]`)
+      f.includes(getTmdbTag(movie.id, true))
     );
     const search = state.unsuccessSearches.find((s) => s.movieId === movie.id);
 

@@ -16,8 +16,14 @@ export function readLibraries(): string[] {
   return LIBRARIES.flatMap((l) => readdirSync(l.dir));
 }
 
+export function getTmdbTag(id: number, brackets?: boolean): string {
+  const tag = `tmdbid-${id}`;
+
+  return brackets ? `[${tag}]` : tag;
+}
+
 export function getDestFilePath(contentPath: string, movie: TinyMovie): string {
-  const name = `${movie.title} (${movie.year}) [tmdbid-${movie.id}]`;
+  const name = `${movie.title} (${movie.year}) ${getTmdbTag(movie.id, true)}`;
   const lib = LIBRARIES.find((l) => name.match(l.regex))!;
   let dest = `${lib.dir}/${name}`;
 

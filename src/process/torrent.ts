@@ -3,7 +3,8 @@ import { RawTorrentV2 } from "../models/raw-torrent-v2.js";
 import { TinyMovie } from "../models/tiny-movie.js";
 import { qb } from "../clients/qb.js";
 import { state, flushState } from "../state.js";
-import { getDestFilePath } from "../utils/utils.js";
+import { getDestFilePath, getTmdbTag } from "../utils/utils.js";
+import { CATEGORY_NAME } from "../utils/constants.js";
 
 export async function startDownload(
   torrents: string[],
@@ -12,8 +13,8 @@ export async function startDownload(
   await qb.checkLogin();
   await qb.api.addTorrent(torrents, {
     paused: false,
-    category: "Bot",
-    tags: [`tmdbid-${movie.id}`],
+    category: CATEGORY_NAME,
+    tags: [getTmdbTag(movie.id)],
   });
 }
 
