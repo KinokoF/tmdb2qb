@@ -5,8 +5,12 @@ export function extractTitles(movie: RichMovie): string[] {
 
   const altTitles = movie.alternative_titles.titles
     .filter((t) => countries.includes(t.iso_3166_1))
-    .map((t) => t.title);
-  const titles = [movie.title, movie.original_title, ...altTitles];
+    .map((t) => t.title.toLowerCase());
+  const titles = [
+    movie.title.toLowerCase(),
+    movie.original_title.toLowerCase(),
+    ...altTitles,
+  ];
   return [...new Set(titles)];
 }
 
