@@ -15,6 +15,28 @@ import {
 } from "./torrent.js";
 import { cleanUnsuccessSearch, onUnsuccessSearch } from "./unsuccess.js";
 import { getTmdbTag, nowMinusDays, readLibraries } from "../utils/utils.js";
+import { TinyMovie } from "../models/tiny-movie.js";
+import { UnsuccessSearch } from "../models/unsuccess-search.js";
+
+async function searchAndDownloadMovie(
+  movie: TinyMovie,
+  search?: UnsuccessSearch
+): Promise<void> {
+  console.log(`[PROCESS] ${movie.title}; Searching...`);
+
+  const torrents = await searchMovie(movie);
+
+  if (torrents.length) {
+    console.log(`[PROCESS] ${movie.title}; Found! Downloading...`);
+
+    await startDownload(torrents, movie);
+    cleanUnsuccessSearch(search);
+  } else {
+    console.log(`[PROCESS] ${movie.title}; 404 :(`);
+
+    onUnsuccessSearch(search, movie);
+  }
+}
 
 export async function processMovies(): Promise<void> {
   console.log("[PROCESS] Start");
@@ -36,29 +58,17 @@ export async function processMovies(): Promise<void> {
     const search = state.unsuccessSearches.find((s) => s.movieId === movie.id);
 
     if (!torrent && !file && (!search || search.searchedOn < searchRetryTime)) {
-      console.log(`[PROCESS] ${movie.title}; Searching...`);
-
-      const torrents = await searchMovie(movie);
-
-      if (torrents.length) {
-        console.log(`[PROCESS] ${movie.title}; Found! Downloading...`);
-
-        await startDownload(torrents, movie);
-        cleanUnsuccessSearch(search);
-      } else {
-        console.log(`[PROCESS] ${movie.title}; 404 :(`);
-
-        onUnsuccessSearch(search, movie);
-      }
+      await searchAndDownloadMovie(movie, search);
     } else if (torrent && !file) {
       if (torrent.completed) {
         console.log(`[PROCESS] ${movie.title}; Completed!`);
 
         await onComplete(torrent, movie);
       } else if (torrent.added_on * 1000 < staleTorrentTime) {
-        console.log(`[PROCESS] ${movie.title}; Stale :(`);
+        console.log(`[PROCESS] ${movie.title}; Stale :( Let's try again!`);
 
         await onStale(torrent);
+        await searchAndDownloadMovie(movie);
       }
     } else if (torrent && file) {
       console.log(`[PROCESS] ${movie.title}; Cleanup`);
