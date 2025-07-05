@@ -5,6 +5,14 @@ import { processMovies } from "./process/process.js";
 import { updatePlugins } from "./upd-plugins/upd-plugins.js";
 import { sleep } from "./utils/utils.js";
 
+/*
+
+TODO
+
+- Rimuovere tag inutilizzati
+
+*/
+
 const addIds = process.argv
   .find((a) => a.startsWith("add="))
   ?.split("=")

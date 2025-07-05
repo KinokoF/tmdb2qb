@@ -28,7 +28,7 @@ export function getDestFilePath(contentPath: string, movie: TinyMovie): string {
   let dest = `${lib.dir}/${name}`;
 
   if (lstatSync(contentPath).isFile()) {
-    dest += contentPath.split(".").pop();
+    dest += "." + contentPath.split(".").pop();
   }
 
   return dest;

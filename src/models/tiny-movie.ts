@@ -4,6 +4,6 @@ export interface TinyMovie {
   originalLang: string;
   year: number;
   runtime: number;
-  titles: string[];
-  years: number[];
+  altTitles: string[];
+  altYears: number[];
 }

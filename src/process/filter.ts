@@ -1,39 +1,28 @@
 import Fuse from "fuse.js";
-import { RawSearchResult } from "qbit.js";
 import { state } from "../state.js";
-import { TITLE_ALT_WHITESPACES, VIRUS_REGEXS } from "../utils/constants.js";
+import { VIRUS_REGEXS } from "../utils/constants.js";
 
-function checkName(loweredFileName: string, title: string): boolean {
-  const fuse = new Fuse([loweredFileName], {
+function checkName(name: string, titles: string[]): boolean {
+  const fuse = new Fuse([name], {
     ignoreDiacritics: true,
     ignoreLocation: true,
     ignoreFieldNorm: true,
     threshold: 0.1,
   });
 
-  return [
-    title,
-    ...TITLE_ALT_WHITESPACES.map((c) => title.replace(" ", c)),
-  ].some((t) => fuse.search(t).length);
+  return titles.some((t) => fuse.search(t).length);
 }
 
-export function filterTorrent(
-  r: RawSearchResult,
-  minFileSize: number,
-  maxFileSize: number,
-  title: string,
-  year: number
+export function filterGroup(
+  name: string,
+  titles: string[],
+  years: number[]
 ): boolean {
-  const loweredFileName = r.fileName.toLowerCase();
-
   return (
-    r.fileSize > minFileSize &&
-    r.fileSize < maxFileSize &&
-    !state.blacklist.includes(r.fileName) &&
-    !VIRUS_REGEXS.some((re) => loweredFileName.match(re)?.length) &&
-    !!loweredFileName.match(`([ _.([-]+|^)${year}([ _.)\\]-]+|$)`)?.length &&
-    !!loweredFileName.match("([ _.([-]+|^)(ita|italian)([ _.)\\]-]+|$)")
-      ?.length &&
-    checkName(loweredFileName, title)
+    !state.blacklist.includes(name) &&
+    !VIRUS_REGEXS.some((r) => name.match(r)?.length) &&
+    !!name.match("([ _.([-]+|^)(ita|italian)([ _.)\\]-]+|$)")?.length &&
+    years.some((y) => name.match(`([ _.([-]+|^)${y}([ _.)\\]-]+|$)`)?.length) &&
+    checkName(name, titles)
   );
 }

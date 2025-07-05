@@ -1,6 +1,6 @@
 import { RichMovie } from "../models/rich-movie.js";
 import { TinyMovie } from "../models/tiny-movie.js";
-import { extractTitles, extractYears } from "./extract.js";
+import { extractAltTitles, extractAltYears } from "./extract.js";
 
 function minifyMovie(movie: RichMovie): TinyMovie {
   const date = new Date(movie.release_date);
@@ -11,8 +11,8 @@ function minifyMovie(movie: RichMovie): TinyMovie {
     originalLang: movie.original_language,
     year: date.getFullYear(),
     runtime: movie.runtime,
-    titles: extractTitles(movie),
-    years: extractYears(movie),
+    altTitles: extractAltTitles(movie),
+    altYears: extractAltYears(movie, date),
   };
 }
 
