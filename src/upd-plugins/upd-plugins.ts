@@ -26,13 +26,11 @@ export async function updatePlugins(): Promise<void> {
 
   const names = plugins.map((p) => p.name);
 
-  // await qb.checkLogin();
-  // await qb.api.uninstallSearchPlugin(names);
+  await qb.checkLogin();
+  await qb.api.uninstallSearchPlugin(names);
 
-  // await qb.checkLogin();
-  // await qb.api.installSearchPlugin(sources);
-
-  console.log(sources);
+  await qb.checkLogin();
+  await qb.api.installSearchPlugin(sources);
 
   console.log("[UPD-PLUGINS] End");
 }

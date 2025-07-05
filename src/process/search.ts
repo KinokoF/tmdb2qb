@@ -7,20 +7,25 @@ import {
 } from "../utils/constants.js";
 import { filterTorrent } from "./filter.js";
 import { calcRating } from "./rating.js";
-import { sleep } from "../utils/utils.js";
+import { eventuallyDecodeUrl, sleep } from "../utils/utils.js";
 
 export async function searchMovie(movie: TinyMovie): Promise<string[]> {
-  const combs = movie.titles.flatMap((t) =>
-    movie.years.map((y) => ({ title: t, year: y }))
+  const combs = movie.titles.flatMap((title) =>
+    movie.years.map((year) => ({ title, year }))
   );
 
   const minFileSize = movie.runtime * MIN_FILE_SIZE_RUNTIME_COEF * 1024 * 1024;
   const maxFileSize = movie.runtime * MAX_FILE_SIZE_RUNTIME_COEF * 1024 * 1024;
 
   const torrents: RawSearchResult[] = [];
+  let count = 1;
 
   for (const comb of combs) {
     const query = `${comb.title} ${comb.year} ita`;
+
+    console.log(
+      `[PROCESS.SEARCH] Query ${count}/${combs.length}; ${query}; Fetching...`
+    );
 
     await qb.checkLogin();
     const searchId = await qb.api.startSearch(query, "enabled", "all");
@@ -28,7 +33,7 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
     let status: RawSearchStatusType;
 
     do {
-      await sleep(10_000);
+      await sleep(4_000);
 
       await qb.checkLogin();
       const statusRes = await qb.api.getSearchStatus(searchId);
@@ -41,13 +46,21 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
       id: Number(searchId),
     });
 
+    console.log(
+      `[PROCESS.SEARCH] Query ${count}/${combs.length}; ${query}; Filtering...`
+    );
+
     const newOnes = resultsRes.results.filter(
       (r) =>
         !torrents.some((t) => t.fileUrl === r.fileUrl) &&
         filterTorrent(r, minFileSize, maxFileSize, comb.title, comb.year)
     );
     torrents.push(...newOnes);
+
+    count++;
   }
+
+  console.log("[PROCESS.SEARCH] Rating...");
 
   const groupedTorrents = Object.groupBy(torrents, (t) => t.fileName);
   const torrentGroups = Object.entries(groupedTorrents).map(([k, v]) => ({
@@ -56,5 +69,7 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
   }));
   torrentGroups.sort((a, b) => b.rating - a.rating);
 
-  return torrentGroups[0]?.torrents.map((t) => t.fileUrl) ?? [];
+  return (
+    torrentGroups[0]?.torrents.map((t) => eventuallyDecodeUrl(t.fileUrl)) ?? []
+  );
 }

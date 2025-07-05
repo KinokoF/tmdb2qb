@@ -32,7 +32,7 @@ export function filterTorrent(
     !state.blacklist.includes(r.fileName) &&
     !VIRUS_REGEXS.some((re) => loweredFileName.match(re)?.length) &&
     !!loweredFileName.match(`([ _.([-]+|^)${year}([ _.)\\]-]+|$)`)?.length &&
-    !!loweredFileName.match(`([ _.([-]+|^)(ita|italian)([ _.)\\]-]+|$)`)
+    !!loweredFileName.match("([ _.([-]+|^)(ita|italian)([ _.)\\]-]+|$)")
       ?.length &&
     checkName(loweredFileName, title)
   );

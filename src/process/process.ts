@@ -56,7 +56,7 @@ export async function processMovies(): Promise<void> {
         console.log(`[PROCESS] ${movie.title}; Completed!`);
 
         await onComplete(torrent, movie);
-      } else if (torrent.added_on < staleTorrentTime) {
+      } else if (torrent.added_on * 1000 < staleTorrentTime) {
         console.log(`[PROCESS] ${movie.title}; Stale :(`);
 
         await onStale(torrent);
@@ -68,8 +68,6 @@ export async function processMovies(): Promise<void> {
     } else {
       console.log(`[PROCESS] ${movie.title}; Skipped`);
     }
-
-    break;
   }
 
   console.log("[PROCESS] End");

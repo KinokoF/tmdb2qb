@@ -102,7 +102,7 @@ export function calcRating(name: string, movie: TinyMovie): number {
 
   if (
     movie.originalLang !== "en" &&
-    loweredName.match(`([ _.([-]+|^)(eng|english)([ _.)\\]-]+|$)`)?.length
+    loweredName.match("([ _.([-]+|^)(eng|english)([ _.)\\]-]+|$)")?.length
   ) {
     rating += 100;
   }

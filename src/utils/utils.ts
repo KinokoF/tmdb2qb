@@ -33,3 +33,7 @@ export function getDestFilePath(contentPath: string, movie: TinyMovie): string {
 
   return dest;
 }
+
+export function eventuallyDecodeUrl(url: string): string {
+  return url.match(/^(https?|magnet)%3A/) ? decodeURIComponent(url) : url;
+}

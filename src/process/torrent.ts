@@ -1,7 +1,7 @@
 import { cpSync } from "fs";
 import { RawTorrentV2 } from "../models/raw-torrent-v2.js";
 import { TinyMovie } from "../models/tiny-movie.js";
-import { qb } from "../clients/qb.js";
+import { ctrlQb, qb } from "../clients/qb.js";
 import { state, flushState } from "../state.js";
 import { getDestFilePath, getTmdbTag } from "../utils/utils.js";
 import { CATEGORY_NAME } from "../utils/constants.js";
@@ -36,6 +36,5 @@ export async function onStale(torrent: RawTorrentV2): Promise<void> {
 }
 
 export async function deleteTorrent(torrent: RawTorrentV2): Promise<void> {
-  await qb.checkLogin();
-  await qb.api.deleteTorrents(torrent.hash, true);
+  await ctrlQb.removeTorrent(torrent.hash, true);
 }
