@@ -5,7 +5,6 @@ import { scrapeOfficialPlugins, scrapeLightDestoryPlugins } from "./scrape.js";
 export async function updatePlugins(): Promise<void> {
   console.log("[UPD-PLUGINS] Start");
 
-  // await qb.checkLogin();
   // await qb.api.updateSearchPlugins();
 
   const protoPlugins = [
@@ -21,15 +20,10 @@ export async function updatePlugins(): Promise<void> {
     return v[0].download;
   });
 
-  await qb.checkLogin();
   const plugins = await qb.api.getSearchPlugins();
-
   const names = plugins.map((p) => p.name);
-
-  await qb.checkLogin();
   await qb.api.uninstallSearchPlugin(names);
 
-  await qb.checkLogin();
   await qb.api.installSearchPlugin(sources);
 
   console.log("[UPD-PLUGINS] End");

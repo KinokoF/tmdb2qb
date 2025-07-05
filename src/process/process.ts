@@ -19,7 +19,6 @@ import { getTmdbTag, nowMinusDays, readLibraries } from "../utils/utils.js";
 export async function processMovies(): Promise<void> {
   console.log("[PROCESS] Start");
 
-  await qb.checkLogin();
   const torrents = (await qb.api.getTorrents({
     category: CATEGORY_NAME,
   })) as RawTorrentV2[];

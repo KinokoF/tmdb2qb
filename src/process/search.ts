@@ -27,21 +27,16 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
       `[PROCESS.SEARCH] Query ${count}/${combs.length}; ${query}; Fetching...`
     );
 
-    await qb.checkLogin();
     const searchId = await qb.api.startSearch(query, "enabled", "all");
-
     let status: RawSearchStatusType;
 
     do {
       await sleep(4_000);
 
-      await qb.checkLogin();
       const statusRes = await qb.api.getSearchStatus(searchId);
-
       status = statusRes[0].status;
     } while (status === "Running");
 
-    await qb.checkLogin();
     const resultsRes = await qb.api.getSearchResults({
       id: Number(searchId),
     });

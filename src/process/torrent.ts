@@ -10,7 +10,6 @@ export async function startDownload(
   torrents: string[],
   movie: TinyMovie
 ): Promise<void> {
-  await qb.checkLogin();
   await qb.api.addTorrent(torrents, {
     paused: false,
     category: CATEGORY_NAME,
