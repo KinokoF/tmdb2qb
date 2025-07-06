@@ -19,7 +19,6 @@
     "license": "ISC",
     "dependencies": {
         "@cospired/i18n-iso-languages": "^4.2.0",
-        "@ctrl/qbittorrent": "^9.6.0",
         "cheerio": "^1.1.0",
         "fuse.js": "^7.1.0",
         "moment": "^2.30.1",
