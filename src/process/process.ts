@@ -14,9 +14,15 @@ import {
   deleteTorrent,
 } from "./torrent.js";
 import { cleanUnsuccessSearch, onUnsuccessSearch } from "./unsuccess.js";
-import { getTmdbTag, nowMinusDays, readLibraries } from "../utils/utils.js";
+import {
+  eventuallyDecodeUrl,
+  getTmdbTag,
+  nowMinusDays,
+  readLibraries,
+} from "../utils/utils.js";
 import { TinyMovie } from "../models/tiny-movie.js";
 import { UnsuccessSearch } from "../models/unsuccess-search.js";
+import { chooseGroup } from "./ollama.js";
 
 async function searchAndDownloadMovie(
   movie: TinyMovie,
@@ -24,18 +30,35 @@ async function searchAndDownloadMovie(
 ): Promise<void> {
   console.log(`[PROCESS] ${movie.title}; Searching...`);
 
-  const torrents = await searchMovie(movie);
+  let groups = await searchMovie(movie);
 
-  if (torrents.length) {
-    console.log(`[PROCESS] ${movie.title}; Found! Downloading...`);
+  while (groups.length) {
+    console.log(`[PROCESS] ${movie.title}; Choosing...`);
 
-    await startDownload(torrents, movie);
-    cleanUnsuccessSearch(search);
-  } else {
-    console.log(`[PROCESS] ${movie.title}; 404 :(`);
+    const choosenGroup = await chooseGroup(groups, movie);
 
-    onUnsuccessSearch(search, movie);
+    if (!choosenGroup) {
+      break;
+    }
+
+    console.log(`[PROCESS] ${movie.title}; Chosen! Trying to download...`);
+
+    const urls = choosenGroup.torrents.map((t) =>
+      eventuallyDecodeUrl(t.fileUrl)
+    );
+    const ok = await startDownload(urls, movie);
+
+    if (ok) {
+      console.log(`[PROCESS] ${movie.title}; Downloading!`);
+      cleanUnsuccessSearch(search);
+      return;
+    }
+
+    groups = groups.filter((g) => g.name !== choosenGroup.name);
   }
+
+  console.log(`[PROCESS] ${movie.title}; 404 :(`);
+  onUnsuccessSearch(search, movie);
 }
 
 export async function processMovies(): Promise<void> {

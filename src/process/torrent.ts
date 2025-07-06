@@ -7,15 +7,20 @@ import { getDestFilePath, getTmdbTag } from "../utils/utils.js";
 import { CATEGORY_NAME } from "../utils/constants.js";
 
 export async function startDownload(
-  torrents: string[],
+  urls: string[],
   movie: TinyMovie
-): Promise<void> {
+): Promise<boolean> {
+  const tag = getTmdbTag(movie.id);
+
   await loginQb();
-  await qb.api.addTorrent(torrents, {
+  await qb.api.addTorrent(urls, {
     paused: false,
     category: CATEGORY_NAME,
-    tags: [getTmdbTag(movie.id)],
+    tags: [tag],
   });
+  const torrents = await qb.api.getTorrents({ tag });
+
+  return !!torrents.length;
 }
 
 export async function onComplete(

@@ -8,10 +8,10 @@ import {
 } from "../utils/constants.js";
 import { filterGroup } from "./filter.js";
 import { calcRating } from "./rating.js";
-import { eventuallyDecodeUrl, sleep } from "../utils/utils.js";
-import { chooseGroup } from "./ollama.js";
+import { sleep } from "../utils/utils.js";
+import { TorrentGroup } from "../models/torrent-group.js";
 
-export async function searchMovie(movie: TinyMovie): Promise<string[]> {
+export async function searchMovie(movie: TinyMovie): Promise<TorrentGroup[]> {
   const titles = [movie.title.toLowerCase(), ...movie.altTitles];
   const years = [movie.year, ...movie.altYears];
   const combs = titles.flatMap((title) =>
@@ -58,7 +58,7 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
     count++;
   }
 
-  console.log("[PROCESS.SEARCH] Filtering, rating and choosing...");
+  console.log("[PROCESS.SEARCH] Filtering and rating...");
 
   const superTitles = titles.flatMap((t) => [
     t,
@@ -67,7 +67,8 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
   const groupedTorrents = Object.groupBy(torrents, (t) =>
     t.fileName.toLowerCase()
   );
-  const torrentGroups = Object.entries(groupedTorrents)
+
+  return Object.entries(groupedTorrents)
     .filter(([k]) => filterGroup(k, superTitles, years))
     .map(([k, v]) => ({
       name: k,
@@ -75,14 +76,4 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
       torrents: v!,
     }))
     .sort((a, b) => b.rating - a.rating);
-
-  if (torrentGroups.length) {
-    const choosenGroup = await chooseGroup(torrentGroups, movie);
-
-    return (
-      choosenGroup?.torrents.map((t) => eventuallyDecodeUrl(t.fileUrl)) ?? []
-    );
-  }
-
-  return [];
 }
