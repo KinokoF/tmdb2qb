@@ -25,6 +25,10 @@ export async function updatePlugins(): Promise<void> {
   const names = plugins.map((p) => p.name);
   await qb.api.uninstallSearchPlugin(names);
 
+  console.log("[UPD-PLUGINS] Uninstalling existing plugins; Waiting 1m...");
+
+  await sleep(60_000);
+
   await qb.api.installSearchPlugin(sources);
 
   console.log(`[UPD-PLUGINS] Installing ${sources.length} plugins; Waiting 1m...`);
