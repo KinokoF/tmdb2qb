@@ -11,9 +11,13 @@ export async function loginQb(): Promise<void> {
 }
 
 // Alt client, only for torrent deletion
-export const ctrlQb = new CtrlQBittorrent({
-  baseUrl: QB_HOST,
-  username: QB_USER,
-  password: QB_PASS,
-  timeout: 3_600_000,
-});
+export let ctrlQb: CtrlQBittorrent;
+
+export async function loginCtrlQb(): Promise<void> {
+  ctrlQb = new CtrlQBittorrent({
+    baseUrl: QB_HOST,
+    username: QB_USER,
+    password: QB_PASS,
+    timeout: 3_600_000,
+  });
+}
