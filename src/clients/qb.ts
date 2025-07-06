@@ -1,8 +1,6 @@
 import { QBittorrent } from "qbit.js";
-import { QBittorrent as CtrlQBittorrent } from "@ctrl/qbittorrent";
 import { QB_HOST, QB_PASS, QB_USER } from "../utils/secrets.js";
 
-// Main client
 export let qb: QBittorrent;
 
 export async function loginQb(): Promise<void> {
@@ -10,14 +8,20 @@ export async function loginQb(): Promise<void> {
   await qb.login(QB_USER, QB_PASS);
 }
 
-// Alt client, only for torrent deletion
-export let ctrlQb: CtrlQBittorrent;
-
-export async function loginCtrlQb(): Promise<void> {
-  ctrlQb = new CtrlQBittorrent({
-    baseUrl: QB_HOST,
-    username: QB_USER,
-    password: QB_PASS,
-    timeout: 3_600_000,
+// Workaround
+export async function deleteTorrents(
+  hashes: string | string[] | "all",
+  deleteFiles: boolean
+) {
+  await qb.checkLogin();
+  const res = await qb.fetch("torrents/delete", {
+    method: "POST",
+    body: `hashes=${encodeURIComponent(
+      Array.isArray(hashes) ? hashes.join("|") : hashes
+    )}&deleteFiles=${deleteFiles}`,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
   });
+  if (res.status !== 200) throw new Error(`Unexpected status "${res.status}"`);
 }
