@@ -6,7 +6,7 @@ export async function chooseGroup(
   groups: TorrentGroup[],
   movie: TinyMovie
 ): Promise<TorrentGroup> {
-  const prompt = `Return only the file number that first exactly identifies the following movie in the following file list.
+  const prompt = `Return ONLY and EXCLUSIVELY the lowest file number that first matches the following movie in the following file list. Avoid files that are trilogies, sagas, or collections. Return -1 if no files match.
 
 MOVIE
 Title: ${movie.title}
@@ -15,7 +15,7 @@ Year: ${movie.year}
 Alternative years: ${movie.altYears.join(", ")}
 
 FILE LIST
-${groups.map((g, i) => `${i}. ${g.name}`).join("\n")}`;
+${groups.map((g, i) => `${i + 1}. ${g.name}`).join("\n")}`;
 
   const response = await ollama.chat({
     model: "gemma3:12b",

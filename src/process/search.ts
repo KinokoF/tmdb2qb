@@ -73,9 +73,14 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
       torrents: v!,
     }))
     .sort((a, b) => b.rating - a.rating);
-  const choosenGroup = await chooseGroup(torrentGroups, movie);
 
-  return (
-    choosenGroup?.torrents.map((t) => eventuallyDecodeUrl(t.fileUrl)) ?? []
-  );
+  if (torrentGroups.length) {
+    const choosenGroup = await chooseGroup(torrentGroups, movie);
+
+    return (
+      choosenGroup?.torrents.map((t) => eventuallyDecodeUrl(t.fileUrl)) ?? []
+    );
+  }
+
+  return [];
 }
