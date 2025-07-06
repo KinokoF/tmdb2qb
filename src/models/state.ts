@@ -3,7 +3,7 @@ import { UnsuccessSearch } from "./unsuccess-search.js";
 
 export interface State {
   movies: TinyMovie[];
-  page: number;
+  scan?: { nextPage: number; startTime: number };
   unsuccessSearches: UnsuccessSearch[];
   blacklist: string[];
 }

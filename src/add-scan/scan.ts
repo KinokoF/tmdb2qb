@@ -8,20 +8,25 @@ import { nowMinusDays, sleep } from "../utils/utils.js";
 import { skipMovie } from "./skip.js";
 import { tmdb } from "../clients/tmdb.js";
 import { scanCollection } from "./collection.js";
+import moment from "moment";
 
 export async function scanMovies(): Promise<void> {
   console.log("[SCAN] Start");
 
+  if (!state.scan || state.scan.startTime < +moment().subtract(1, "d")) {
+    state.scan = { nextPage: 1, startTime: Date.now() };
+    flushState();
+  }
+
   const maxReleaseTime = nowMinusDays(MIN_DAYS_PASSED_SINCE_RELEASE);
-  let topRatedRes;
+  let totalPages;
 
   for (
-    let i = state.page;
-    (!topRatedRes || i <= topRatedRes.total_pages) &&
-    state.movies.length < MOVIES_TO_FETCH;
+    let i = state.scan.nextPage;
+    (!totalPages || i <= totalPages) && state.movies.length < MOVIES_TO_FETCH;
     i++
   ) {
-    topRatedRes = await tmdb.movies.topRated({
+    const topRatedRes = await tmdb.movies.topRated({
       language: "it-IT",
       page: i,
     });
@@ -50,12 +55,14 @@ export async function scanMovies(): Promise<void> {
         toAdd.push(...relMovies);
       }
 
+      totalPages = Math.min(topRatedRes.total_pages, 500);
+
       state.movies.push(...minifyMovies(toAdd));
-      state.page = i;
+      state.scan.nextPage = Math.min(i + 1, totalPages);
       flushState();
 
       console.log(
-        `[SCAN] Page ${i}/${topRatedRes.total_pages}; Added ${toAdd.length} movies`
+        `[SCAN] Page ${i}/${totalPages}; Added ${toAdd.length} movies`
       );
     }
   }

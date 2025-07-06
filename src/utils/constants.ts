@@ -2,7 +2,6 @@ import { State } from "../models/state.js";
 
 export const INITIAL_STATE: State = {
   movies: [],
-  page: 1,
   unsuccessSearches: [],
   blacklist: [],
 };
