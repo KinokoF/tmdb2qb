@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync } from "fs";
 import { CATEGORY_DIR, CATEGORY_NAME, LIBRARIES } from "../utils/constants.js";
-import { qb } from "../clients/qb.js";
+import { loginQb, qb } from "../clients/qb.js";
 
 function checkDirs(): void {
   [CATEGORY_DIR, ...LIBRARIES.map((l) => l.dir)]
@@ -9,6 +9,7 @@ function checkDirs(): void {
 }
 
 async function checkCategory(): Promise<void> {
+  await loginQb();
   const categories = await qb.api.getCategories();
 
   if (!categories[CATEGORY_NAME]) {

@@ -2,9 +2,15 @@ import { QBittorrent } from "qbit.js";
 import { QBittorrent as CtrlQBittorrent } from "@ctrl/qbittorrent";
 import { QB_HOST, QB_PASS, QB_USER } from "../utils/secrets.js";
 
-export const qb = new QBittorrent(QB_HOST);
-await qb.login(QB_USER, QB_PASS);
+// Main client
+export let qb: QBittorrent;
 
+export async function loginQb(): Promise<void> {
+  qb = new QBittorrent(QB_HOST);
+  await qb.login(QB_USER, QB_PASS);
+}
+
+// Alt client, only for torrent deletion
 export const ctrlQb = new CtrlQBittorrent({
   baseUrl: QB_HOST,
   username: QB_USER,

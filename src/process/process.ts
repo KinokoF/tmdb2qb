@@ -1,5 +1,5 @@
 import { RawTorrentV2 } from "../models/raw-torrent-v2.js";
-import { qb } from "../clients/qb.js";
+import { loginQb, qb } from "../clients/qb.js";
 import { state } from "../state.js";
 import {
   CATEGORY_NAME,
@@ -41,6 +41,7 @@ async function searchAndDownloadMovie(
 export async function processMovies(): Promise<void> {
   console.log("[PROCESS] Start");
 
+  await loginQb();
   const torrents = (await qb.api.getTorrents({
     category: CATEGORY_NAME,
   })) as RawTorrentV2[];
@@ -60,7 +61,7 @@ export async function processMovies(): Promise<void> {
     if (!torrent && !file && (!search || search.searchedOn < searchRetryTime)) {
       await searchAndDownloadMovie(movie, search);
     } else if (torrent && !file) {
-      if (torrent.completion_on) {
+      if (torrent.completion_on > -1) {
         console.log(`[PROCESS] ${movie.title}; Completed!`);
 
         await onComplete(torrent, movie);
@@ -69,13 +70,15 @@ export async function processMovies(): Promise<void> {
 
         await onStale(torrent);
         await searchAndDownloadMovie(movie);
+      } else {
+        console.log(`[PROCESS] ${movie.title}; Waiting for completion...`);
       }
     } else if (torrent && file) {
       console.log(`[PROCESS] ${movie.title}; Cleanup`);
 
       await deleteTorrent(torrent);
     } else {
-      console.log(`[PROCESS] ${movie.title}; Skipped`);
+      console.log(`[PROCESS] ${movie.title}; Already in the library`);
     }
   }
 

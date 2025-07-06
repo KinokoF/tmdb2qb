@@ -1,6 +1,6 @@
 import { RawSearchResult, RawSearchStatusType } from "qbit.js";
 import { TinyMovie } from "../models/tiny-movie.js";
-import { qb } from "../clients/qb.js";
+import { loginQb, qb } from "../clients/qb.js";
 import {
   MIN_FILE_SIZE_RUNTIME_COEF,
   MAX_FILE_SIZE_RUNTIME_COEF,
@@ -31,6 +31,7 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
       `[PROCESS.SEARCH] Query ${count}/${combs.length}; ${query}; Fetching...`
     );
 
+    await loginQb();
     const searchId = await qb.api.startSearch(query, "enabled", "all");
     let status: RawSearchStatusType;
 
@@ -44,6 +45,7 @@ export async function searchMovie(movie: TinyMovie): Promise<string[]> {
     const resultsRes = await qb.api.getSearchResults({
       id: Number(searchId),
     });
+    await qb.api.deleteSearch(searchId);
 
     const newOnes = resultsRes.results.filter(
       (r) =>

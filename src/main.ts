@@ -10,6 +10,7 @@ import { sleep } from "./utils/utils.js";
 TODO
 
 - Rimuovere tag inutilizzati
+- Scremare titoli alternativi che sono superset
 
 */
 
