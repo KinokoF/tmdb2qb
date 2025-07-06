@@ -28,7 +28,7 @@ export async function onComplete(
 }
 
 export async function onStale(torrent: RawTorrentV2): Promise<void> {
-  state.blacklist.push(torrent.name);
+  state.blacklist.push(torrent.name.toLowerCase());
   flushState();
 
   await deleteTorrent(torrent);

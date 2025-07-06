@@ -60,7 +60,7 @@ export async function processMovies(): Promise<void> {
     if (!torrent && !file && (!search || search.searchedOn < searchRetryTime)) {
       await searchAndDownloadMovie(movie, search);
     } else if (torrent && !file) {
-      if (torrent.completed) {
+      if (torrent.completion_on) {
         console.log(`[PROCESS] ${movie.title}; Completed!`);
 
         await onComplete(torrent, movie);
