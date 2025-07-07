@@ -84,7 +84,7 @@ export async function processMovies(): Promise<void> {
     if (!torrent && !file && (!search || search.searchedOn < searchRetryTime)) {
       await searchAndDownloadMovie(movie, search);
     } else if (torrent && !file) {
-      if (torrent.progress === 100) {
+      if (torrent.progress === 1) {
         console.log(`[PROCESS] ${movie.title}; Completed!`);
 
         await onComplete(torrent, movie);
@@ -100,8 +100,6 @@ export async function processMovies(): Promise<void> {
       console.log(`[PROCESS] ${movie.title}; Cleanup`);
 
       await deleteTorrent(torrent);
-    } else {
-      console.log(`[PROCESS] ${movie.title}; Already in the library`);
     }
   }
 

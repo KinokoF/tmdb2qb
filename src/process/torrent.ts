@@ -30,11 +30,11 @@ export async function startDownload(
   })) as RawTorrentV2[];
 
   if (torrents.length > 0) {
-    qb.api.resumeTorrents(torrents[0].hash);
+    await qb.api.resumeTorrents(torrents[0].hash);
 
     if (torrents.length > 1) {
       const hashes = torrents.slice(1).map((t) => t.hash);
-      deleteTorrents(hashes, false);
+      await deleteTorrents(hashes, false);
     }
   }
 
