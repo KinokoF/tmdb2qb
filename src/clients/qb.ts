@@ -8,7 +8,21 @@ export async function loginQb(): Promise<void> {
   await qb.login(QB_USER, QB_PASS);
 }
 
-// Workaround
+// Workarounds
+export async function resumeTorrents(hashes: string | string[] | "all") {
+  await qb.checkLogin();
+  const res = await qb.fetch("torrents/start", {
+    method: "POST",
+    body: `hashes=${encodeURIComponent(
+      Array.isArray(hashes) ? hashes.join("|") : hashes
+    )}`,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
+  if (res.status !== 200) throw new Error(`Unexpected status "${res.status}"`);
+}
+
 export async function deleteTorrents(
   hashes: string | string[] | "all",
   deleteFiles: boolean

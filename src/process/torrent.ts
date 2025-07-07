@@ -1,7 +1,7 @@
 import { cpSync, lstatSync, renameSync } from "fs";
 import { RawTorrentV2 } from "../models/raw-torrent-v2.js";
 import { TinyMovie } from "../models/tiny-movie.js";
-import { deleteTorrents, loginQb, qb } from "../clients/qb.js";
+import { deleteTorrents, loginQb, qb, resumeTorrents } from "../clients/qb.js";
 import { state, flushState } from "../state.js";
 import { getTmdbTag, sleep } from "../utils/utils.js";
 import { CATEGORY_NAME, LIBRARIES } from "../utils/constants.js";
@@ -30,7 +30,7 @@ export async function startDownload(
   })) as RawTorrentV2[];
 
   if (torrents.length > 0) {
-    await qb.api.resumeTorrents(torrents[0].hash);
+    await resumeTorrents(torrents[0].hash);
 
     if (torrents.length > 1) {
       const hashes = torrents.slice(1).map((t) => t.hash);
