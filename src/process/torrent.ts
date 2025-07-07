@@ -15,7 +15,7 @@ export async function startDownload(
 
   await loginQb();
   await qb.api.addTorrent(urls, {
-    paused: false,
+    paused: true,
     category: CATEGORY_NAME,
     tags: [tag],
   });
@@ -24,7 +24,19 @@ export async function startDownload(
   await sleep(4_000);
 
   await loginQb();
-  const torrents = await qb.api.getTorrents({ tag });
+  const torrents = (await qb.api.getTorrents({
+    tag,
+    sort: "added_on",
+  })) as RawTorrentV2[];
+
+  if (torrents.length > 0) {
+    qb.api.resumeTorrents(torrents[0].hash);
+
+    if (torrents.length > 1) {
+      const hashes = torrents.slice(1).map((t) => t.hash);
+      deleteTorrents(hashes, false);
+    }
+  }
 
   return !!torrents.length;
 }

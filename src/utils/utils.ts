@@ -24,3 +24,21 @@ export function getTmdbTag(id: number, brackets?: boolean): string {
 export function eventuallyDecodeUrl(url: string): string {
   return url.match(/^(https?|magnet)%3A/) ? decodeURIComponent(url) : url;
 }
+
+export function retryOnError<T>(fn: () => T, max: number): T {
+  let i = 0;
+  let lastError;
+
+  do {
+    lastError = null;
+
+    try {
+      return fn();
+    } catch (error) {
+      i++;
+      lastError = error;
+    }
+  } while (lastError && i < max);
+
+  throw lastError;
+}

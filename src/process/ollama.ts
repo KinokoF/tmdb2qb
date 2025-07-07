@@ -1,6 +1,7 @@
 import { TinyMovie } from "../models/tiny-movie.js";
 import ollama from "ollama";
 import { TorrentGroup } from "../models/torrent-group.js";
+import { retryOnError } from "../utils/utils.js";
 
 export async function chooseGroup(
   groups: TorrentGroup[],
@@ -17,10 +18,14 @@ Alternative years: ${movie.altYears.join(", ")}
 FILE LIST
 ${groups.map((g, i) => `${i + 1}. ${g.name}`).join("\n")}`;
 
-  const response = await ollama.chat({
-    model: "gemma3:12b",
-    messages: [{ role: "user", content: prompt }],
-  });
-  const index = Number(response.message.content) - 1;
+  const res = await retryOnError(
+    async () =>
+      await ollama.chat({
+        model: "gemma3:12b",
+        messages: [{ role: "user", content: prompt }],
+      }),
+    3
+  );
+  const index = Number(res.message.content) - 1;
   return groups[index];
 }
