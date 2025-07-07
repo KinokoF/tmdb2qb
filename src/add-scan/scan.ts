@@ -32,6 +32,8 @@ export async function scanMovies(): Promise<void> {
     });
     await sleep(20);
 
+    totalPages = Math.min(topRatedRes.total_pages, 500);
+
     for (const movie of topRatedRes.results) {
       if (skipMovie(movie, maxReleaseTime)) {
         continue;
@@ -55,16 +57,16 @@ export async function scanMovies(): Promise<void> {
         toAdd.push(...relMovies);
       }
 
-      totalPages = Math.min(topRatedRes.total_pages, 500);
-
       state.movies.push(...minifyMovies(toAdd));
-      state.scan.nextPage = Math.min(i + 1, totalPages);
       flushState();
 
       console.log(
         `[SCAN] Page ${i}/${totalPages}; Added ${toAdd.length} movies`
       );
     }
+
+    state.scan.nextPage = Math.min(i + 1, totalPages);
+    flushState();
   }
 
   console.log("[SCAN] End");
