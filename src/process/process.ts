@@ -22,7 +22,7 @@ import {
 } from "../utils/utils.js";
 import { TinyMovie } from "../models/tiny-movie.js";
 import { UnsuccessSearch } from "../models/unsuccess-search.js";
-import { chooseGroup } from "./ollama.js";
+import { chooseGroup } from "./choose.js";
 
 async function searchAndDownloadMovie(
   movie: TinyMovie,

@@ -25,6 +25,7 @@ export function eventuallyDecodeUrl(url: string): string {
   return url.match(/^(https?|magnet)%3A/) ? decodeURIComponent(url) : url;
 }
 
+// TODO: Rimuovere?
 export function retryOnError<T>(fn: () => T, max: number): T {
   let i = 0;
   let lastError;

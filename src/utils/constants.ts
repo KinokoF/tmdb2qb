@@ -84,3 +84,6 @@ export const OFFICIAL_PLUGINS_REPO =
 export const LIGHT_DESTORY_PLUGINS_REPO =
   "https://github.com/LightDestory/qBittorrent-Search-Plugins";
 export const BROKEN_PLUGIN_CHARS = ["❗", "✖", "❌", "Yggdrasil", "✖️", "❓"];
+
+export const OI_CHAT_ENDPOINT = "http://localhost:8080/api/chat/completions";
+export const OI_MODEL = "gemma3:12b";
