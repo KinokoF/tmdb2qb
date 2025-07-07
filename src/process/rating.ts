@@ -25,6 +25,8 @@ import {
   REPACKED_REGEXS,
   BEST_RIPPER_REGEXS,
   GOOD_RIPPER_REGEXS,
+  AAC_REGEXS,
+  DTS_REGEXS,
 } from "../utils/constants.js";
 
 export function calcRating(name: string, movie: TinyMovie): number {
@@ -77,9 +79,13 @@ export function calcRating(name: string, movie: TinyMovie): number {
     rating += 1e4;
   }
 
-  if (EAC3_REGEXS.some((r) => loweredName.match(r)?.length)) {
-    rating += 2e3;
+  if (
+    [...EAC3_REGEXS, ...DTS_REGEXS].some((r) => loweredName.match(r)?.length)
+  ) {
+    rating += 3e3;
   } else if (AC3_REGEXS.some((r) => loweredName.match(r)?.length)) {
+    rating += 2e3;
+  } else if (AAC_REGEXS.some((r) => loweredName.match(r)?.length)) {
     rating += 1e3;
   }
 

@@ -51,14 +51,16 @@ export const AUD_7_1_REGEXS = [/([ _.([-]+|^)7[ _.-]+1([ _.)\]-]+|$)/];
 export const AUD_5_1_REGEXS = [/([ _.([-]+|^)5[ _.-]+1([ _.)\]-]+|$)/];
 export const AUD_2_1_REGEXS = [/([ _.([-]+|^)2[ _.-]+1([ _.)\]-]+|$)/];
 export const AUD_2_0_REGEXS = [/([ _.([-]+|^)2[ _.-]+0([ _.)\]-]+|$)/];
+export const DTS_REGEXS = [/([ _.([-]+|^)dts([ _.)\]-]+|$)/];
 export const EAC3_REGEXS = [
-  /([ _.([-]+|^)e[ _.-]*ac[ _.-]*3([ _.)\]-]+|$)/,
+  /([ _.([-]+|^)(e|enhanced)[ _.-]*ac[ _.-]*3([ _.)\]-]+|$)/,
   /([ _.([-]+|^)(d|dolby)[ _.-]*(d|digital)[ _.-]*(p|plus|\+)([ _.)\]-]+|$)/,
 ];
 export const AC3_REGEXS = [
   /([ _.([-]+|^)ac[ _.-]*3([ _.)\]-]+|$)/,
   /([ _.([-]+|^)(d|dolby)[ _.-]*(d|digital)([ _.)\]-]+|$)/,
 ];
+export const AAC_REGEXS = [/([ _.([-]+|^)aac([ _.)\]-]+|$)/];
 export const REMASTERED_REGEXS = [/([ _.([-]+|^)remastered([ _.)\]-]+|$)/];
 export const BEST_RIPPER_REGEXS = [
   /([ _.([-]+|^)licdom([ _.)\]-]+|$)/,
