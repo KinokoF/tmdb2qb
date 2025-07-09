@@ -4,6 +4,7 @@ import { TinyMovie } from "../models/tiny-movie.js";
 import { TorrentGroup } from "../models/torrent-group.js";
 import { OI_CHAT_ENDPOINT, OI_MODEL } from "../utils/constants.js";
 import { OI_TOKEN } from "../utils/secrets.js";
+import { retryOnError } from "../utils/utils.js";
 
 export async function chat(request: ChatRequest): Promise<ChatResponse> {
   const res = await fetch(OI_CHAT_ENDPOINT, {
@@ -14,8 +15,13 @@ export async function chat(request: ChatRequest): Promise<ChatResponse> {
     },
     body: JSON.stringify(request),
   });
+  const body = await res.json();
 
-  return await res.json();
+  if (!res.ok) {
+    throw new Error(body.detail);
+  }
+
+  return body;
 }
 
 export async function chooseGroup(
@@ -33,10 +39,14 @@ Alternative years: ${movie.altYears.join(", ")}
 FILE LIST
 ${groups.map((g, i) => `${i + 1}. ${g.name}`).join("\n")}`;
 
-  const res = await chat({
-    model: OI_MODEL,
-    messages: [{ role: "user", content: prompt }],
-  });
+  const res = await retryOnError(
+    async () =>
+      await chat({
+        model: OI_MODEL,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    3
+  );
   const index = Number(res.choices[0].message.content) - 1;
   return groups[index];
 }
