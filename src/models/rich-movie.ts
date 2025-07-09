@@ -4,4 +4,4 @@ export type RichMovie = AppendToResponse<
   MovieDetails,
   ("release_dates" | "alternative_titles")[],
   "movie"
->;
+> & { origin_country: string[] };

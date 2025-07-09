@@ -10,6 +10,8 @@ import { sleep } from "./utils/utils.js";
 TODO
 
 - Scremare titoli alternativi che sono superset ???
+- Esporre pagina web ???
+- Rivedere logica search
 
 */
 

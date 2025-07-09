@@ -5,6 +5,7 @@ import { scanCollection } from "./collection.js";
 import { minifyMovies } from "./minify.js";
 import { skipExistingMovie, skipRecentOrUpcomingMovie } from "./skip.js";
 import { MIN_DAYS_PASSED_SINCE_RELEASE } from "../utils/constants.js";
+import { RichMovie } from "../models/rich-movie.js";
 
 export async function addMovies(ids: number[]): Promise<void> {
   console.log("[ADD] Start");
@@ -16,11 +17,11 @@ export async function addMovies(ids: number[]): Promise<void> {
       continue;
     }
 
-    const detailsRes = await tmdb.movies.details(
+    const detailsRes = (await tmdb.movies.details(
       id,
       ["release_dates", "alternative_titles"],
       "it-IT"
-    );
+    )) as RichMovie;
     await sleep(20);
 
     if (skipRecentOrUpcomingMovie(detailsRes.release_date, maxReleaseTime)) {

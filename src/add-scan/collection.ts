@@ -23,11 +23,11 @@ export async function scanCollection(
       continue;
     }
 
-    const relatedDetailsRes = await tmdb.movies.details(
+    const relatedDetailsRes = (await tmdb.movies.details(
       relatedMovie.id,
       ["release_dates", "alternative_titles"],
       "it-IT"
-    );
+    )) as RichMovie;
     await sleep(20);
 
     toRet.push(relatedDetailsRes);

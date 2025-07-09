@@ -9,6 +9,7 @@ import { skipMovie } from "./skip.js";
 import { tmdb } from "../clients/tmdb.js";
 import { scanCollection } from "./collection.js";
 import moment from "moment";
+import { RichMovie } from "../models/rich-movie.js";
 
 export async function scanMovies(): Promise<void> {
   console.log("[SCAN] Start");
@@ -39,11 +40,11 @@ export async function scanMovies(): Promise<void> {
         continue;
       }
 
-      const detailsRes = await tmdb.movies.details(
+      const detailsRes = (await tmdb.movies.details(
         movie.id,
         ["release_dates", "alternative_titles"],
         "it-IT"
-      );
+      )) as RichMovie;
       await sleep(20);
 
       const toAdd = [detailsRes];

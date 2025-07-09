@@ -19,14 +19,13 @@ import {
   AUD_5_1_REGEXS,
   AUD_2_1_REGEXS,
   AUD_2_0_REGEXS,
-  EAC3_REGEXS,
-  AC3_REGEXS,
   REMASTERED_REGEXS,
   REPACKED_REGEXS,
   BEST_RIPPER_REGEXS,
   GOOD_RIPPER_REGEXS,
-  AAC_REGEXS,
-  DTS_REGEXS,
+  LOSSLESS_AUD_REGEXS,
+  BEST_LOSSY_AUD_REGEXS,
+  GOOD_LOSSY_AUD_REGEXS,
 } from "../utils/constants.js";
 
 export function calcRating(name: string, movie: TinyMovie): number {
@@ -79,13 +78,11 @@ export function calcRating(name: string, movie: TinyMovie): number {
     rating += 1e4;
   }
 
-  if (
-    [...EAC3_REGEXS, ...DTS_REGEXS].some((r) => loweredName.match(r)?.length)
-  ) {
+  if (LOSSLESS_AUD_REGEXS.some((r) => loweredName.match(r)?.length)) {
     rating += 3e3;
-  } else if (AC3_REGEXS.some((r) => loweredName.match(r)?.length)) {
+  } else if (BEST_LOSSY_AUD_REGEXS.some((r) => loweredName.match(r)?.length)) {
     rating += 2e3;
-  } else if (AAC_REGEXS.some((r) => loweredName.match(r)?.length)) {
+  } else if (GOOD_LOSSY_AUD_REGEXS.some((r) => loweredName.match(r)?.length)) {
     rating += 1e3;
   }
 
