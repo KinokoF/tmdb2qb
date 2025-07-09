@@ -1,5 +1,6 @@
 import { readdirSync } from "fs";
 import { LIBRARIES } from "./constants.js";
+import { isPromise } from "util/types";
 
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -25,8 +26,11 @@ export function eventuallyDecodeUrl(url: string): string {
   return url.match(/^(https?|magnet)%3A/) ? decodeURIComponent(url) : url;
 }
 
-// TODO: Rimuovere?
-export function retryOnError<T>(fn: () => T, max: number): T {
+export async function retryOnError<T>(
+  fn: () => T | Promise<T>,
+  maxAttempts = 3,
+  retryDelayMs = 0
+): Promise<T> {
   let i = 0;
   let lastError;
 
@@ -34,12 +38,15 @@ export function retryOnError<T>(fn: () => T, max: number): T {
     lastError = null;
 
     try {
-      return fn();
+      return isPromise(fn) ? await fn() : fn();
     } catch (error) {
-      i++;
       lastError = error;
     }
-  } while (lastError && i < max);
+
+    await sleep(retryDelayMs);
+
+    i++;
+  } while (lastError && i < maxAttempts);
 
   throw lastError;
 }

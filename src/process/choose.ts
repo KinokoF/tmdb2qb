@@ -25,7 +25,8 @@ ${groups.map((g, i) => `${i + 1}. ${g.name}`).join("\n")}`;
         model: OI_MODEL,
         messages: [{ role: "user", content: prompt }],
       }),
-    3
+    3,
+    10_000
   );
   const index = Number(res.choices[0].message.content) - 1;
   return groups[index];

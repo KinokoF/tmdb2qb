@@ -1,6 +1,7 @@
 import Fuse from "fuse.js";
 import { state } from "../state.js";
 import { VIRUS_REGEXS } from "../utils/constants.js";
+import { RawSearchResult } from "qbit.js";
 
 function checkName(name: string, titles: string[]): boolean {
   const fuse = new Fuse([name], {
@@ -13,12 +14,18 @@ function checkName(name: string, titles: string[]): boolean {
   return titles.some((t) => fuse.search(t).length);
 }
 
-export function filterGroup(
-  name: string,
+export function filterResult(
+  result: RawSearchResult,
   titles: string[],
-  years: number[]
+  years: number[],
+  minFileSize: number,
+  maxFileSize: number
 ): boolean {
+  const name = result.fileName.toLowerCase();
+
   return (
+    result.fileSize > minFileSize &&
+    result.fileSize < maxFileSize &&
     !state.blacklist.includes(name) &&
     !VIRUS_REGEXS.some((r) => name.match(r)?.length) &&
     !!name.match("([ _.([-]+|^)(ita|italian)([ _.)\\]-]+|$)")?.length &&

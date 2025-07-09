@@ -10,11 +10,12 @@ export const CATEGORY_NAME = "TMDB2qb";
 export const CATEGORY_DIR = "/mnt/HDD1/In download";
 
 export const LIBRARIES = [
-  { regex: /^[a-m]/i, dir: "/mnt/HDD1/Film (A-M)" },
-  { regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
+  { regex: /^[a-z]/i, dir: "/mnt/HDD1/Film" },
+  // { regex: /^[a-m]/i, dir: "/mnt/HDD1/Film (A-M)" },
+  // { regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
 ];
 
-export const MOVIES_TO_FETCH = 8000;
+export const MOVIES_TO_FETCH = 1000;
 
 export const MIN_DAYS_PASSED_SINCE_RELEASE = 30;
 export const SEARCH_RETRY_INTERVAL_IN_DAYS = 30;
@@ -36,6 +37,7 @@ export const UPSCALED_REGEXS = [
 ];
 export const EXTENDED_REGEXS = [
   /([ _.([-]+|^)extended([ _.-]*cut)?([ _.)\]-]+|$)/,
+  /([ _.([-]+|^)(esteso|estesa)([ _.)\]-]+|$)/,
   /([ _.([-]+|^)director'?s?[ _.-]*cut([ _.)\]-]+|$)/,
 ];
 export const DV_REGEXS = [
@@ -63,7 +65,11 @@ export const GOOD_LOSSY_AUD_REGEXS = [
   /([ _.([-]+|^)dts([ _.)\]-]+|$)/,
   /([ _.([-]+|^)aac([ _.)\]-]+|$)/,
 ];
-export const REMASTERED_REGEXS = [/([ _.([-]+|^)remastered([ _.)\]-]+|$)/];
+export const REMASTERED_REGEXS = [
+  /([ _.([-]+|^)remastered([ _.)\]-]+|$)/,
+  /([ _.([-]+|^)(rimasterizzato|rimasterizzata)([ _.)\]-]+|$)/,
+  /([ _.([-]+|^)(restaurato|restaurata)([ _.)\]-]+|$)/,
+];
 export const BEST_RIPPER_REGEXS = [
   /([ _.([-]+|^)licdom([ _.)\]-]+|$)/,
   /([ _.([-]+|^)sp33dy94[ _.()[\]-]*mircrew([ _.)\]-]+|$)/,
@@ -80,6 +86,8 @@ export const REPACKED_REGEXS = [
 export const VIRUS_REGEXS = [
   /([ _.([-]+|^)(exe|msi|bat|dmg|sh|jar)([ _.)\]-]+|$)/,
 ];
+
+export const HIGH_QUALITY_THRESHOLD = 2.5e9;
 
 export const OFFICIAL_PLUGINS_REPO =
   "https://github.com/qbittorrent/search-plugins/wiki/Unofficial-search-plugins";
