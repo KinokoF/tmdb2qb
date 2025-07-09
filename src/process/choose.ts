@@ -1,28 +1,8 @@
-import { ChatRequest } from "../models/chat-request.js";
-import { ChatResponse } from "../models/chat-response.js";
+import { chat } from "../clients/oi.js";
 import { TinyMovie } from "../models/tiny-movie.js";
 import { TorrentGroup } from "../models/torrent-group.js";
-import { OI_CHAT_ENDPOINT, OI_MODEL } from "../utils/constants.js";
-import { OI_TOKEN } from "../utils/secrets.js";
+import { OI_MODEL } from "../utils/constants.js";
 import { retryOnError } from "../utils/utils.js";
-
-export async function chat(request: ChatRequest): Promise<ChatResponse> {
-  const res = await fetch(OI_CHAT_ENDPOINT, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${OI_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(request),
-  });
-  const body = await res.json();
-
-  if (!res.ok) {
-    throw new Error(body.detail);
-  }
-
-  return body;
-}
 
 export async function chooseGroup(
   groups: TorrentGroup[],
