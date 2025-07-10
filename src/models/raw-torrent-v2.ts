@@ -1,3 +1,5 @@
 import { RawTorrent } from "qbit.js";
 
-export type RawTorrentV2 = RawTorrent & { hash: string };
+export interface RawTorrentV2 extends RawTorrent {
+  hash: string;
+}

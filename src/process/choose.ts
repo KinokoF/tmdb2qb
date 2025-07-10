@@ -1,13 +1,13 @@
 import { chat } from "../clients/oi.js";
 import { TinyMovie } from "../models/tiny-movie.js";
-import { TorrentGroup } from "../models/torrent-group.js";
+import { ResultGroup } from "../models/result-group.js";
 import { OI_MODEL } from "../utils/constants.js";
 import { retryOnError } from "../utils/utils.js";
 
 export async function chooseGroup(
-  groups: TorrentGroup[],
+  groups: ResultGroup[],
   movie: TinyMovie
-): Promise<TorrentGroup> {
+): Promise<ResultGroup> {
   const prompt = `Return ONLY and EXCLUSIVELY the lowest file number that first matches the following movie in the following file list. Avoid files that are trilogies, sagas, or collections. Return -1 if no files match.
 
 MOVIE

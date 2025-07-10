@@ -1,20 +1,20 @@
 import { RatedResult } from "../models/rated-result.js";
 import { TinyMovie } from "../models/tiny-movie.js";
-import { TorrentGroup } from "../models/torrent-group.js";
+import { ResultGroup } from "../models/result-group.js";
 import { eventuallyDecodeUrl } from "../utils/utils.js";
 import { chooseGroup } from "./choose.js";
 import { startDownload } from "./torrent.js";
 
-function groupResults(results: RatedResult[]): TorrentGroup[] {
-  const groupedTorrents = Object.groupBy(results, (r) =>
+function groupResults(results: RatedResult[]): ResultGroup[] {
+  const groupedResults = Object.groupBy(results, (r) =>
     r.fileName.toLowerCase()
   );
 
-  return Object.entries(groupedTorrents)
+  return Object.entries(groupedResults)
     .map(([k, v]) => ({
       name: k,
       rating: v![0].rating,
-      torrents: v!,
+      results: v!,
     }))
     .sort((a, b) => b.rating - a.rating);
 }
@@ -38,7 +38,7 @@ export async function chooseAndDownload(
       `[PROCESS.DOWNLOAD] ${movie.title}; Chosen! Trying to download...`
     );
 
-    const urls = choosenGroup.torrents.map((t) =>
+    const urls = choosenGroup.results.map((t) =>
       eventuallyDecodeUrl(t.fileUrl)
     );
     const ok = await startDownload(urls, movie);
