@@ -10,9 +10,9 @@ export const CATEGORY_NAME = "TMDB2qb";
 export const CATEGORY_DIR = "/mnt/HDD1/In download";
 
 export const LIBRARIES = [
-  { regex: /^[a-z]/i, dir: "/mnt/HDD1/Film" },
-  // { regex: /^[a-m]/i, dir: "/mnt/HDD1/Film (A-M)" },
+  { regex: /^./, dir: "/mnt/HDD1/Film" },
   // { regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
+  // { regex: /^./, dir: "/mnt/HDD1/Film (0-M)" },
 ];
 
 export const MOVIES_TO_FETCH = 1000;
