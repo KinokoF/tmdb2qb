@@ -21,7 +21,7 @@ export async function startDownload(
   });
 
   // TODO: Verificare che risolva problema torrent doppioni
-  await sleep(4_000);
+  await sleep(urls.length * 2_000);
 
   await loginQb();
   const torrents = (await qb.api.getTorrents({

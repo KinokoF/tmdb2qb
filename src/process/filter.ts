@@ -21,11 +21,12 @@ export function filterResult(
   minFileSize: number,
   maxFileSize: number
 ): boolean {
-  const name = result.fileName.toLowerCase();
+  const name = result.fileName?.toLowerCase();
 
   return (
     result.fileSize > minFileSize &&
     result.fileSize < maxFileSize &&
+    !!name &&
     !state.blacklist.includes(name) &&
     !VIRUS_REGEXS.some((r) => name.match(r)?.length) &&
     !!name.match("([ _.([-]+|^)(ita|italian)([ _.)\\]-]+|$)")?.length &&
