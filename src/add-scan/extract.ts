@@ -8,8 +8,11 @@ export function extractAltTitles(movieOrTv: RichMovie | RichTv): string[] {
   const originalTitle =
     (movieOrTv as RichMovie).original_title ??
     (movieOrTv as RichTv).original_name;
+  const alternativeTitles =
+    (movieOrTv as RichMovie).alternative_titles.titles ??
+    (movieOrTv as any).alternative_titles.results;
 
-  const titles = movieOrTv.alternative_titles.titles
+  const titles = alternativeTitles
     .filter((t) => countries.includes(t.iso_3166_1))
     .map((t) => t.title.toLowerCase());
 
