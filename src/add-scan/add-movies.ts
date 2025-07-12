@@ -9,7 +9,7 @@ import { RichMovie } from "../models/rich-movie.js";
 import moment from "moment";
 
 export async function addMovies(ids: number[]): Promise<void> {
-  console.log("[ADD] Start");
+  console.log("[ADD-MOVIES] Start");
 
   const maxReleaseDate = moment()
     .subtract(MIN_DAYS_PASSED_SINCE_RELEASE, "d")
@@ -45,8 +45,8 @@ export async function addMovies(ids: number[]): Promise<void> {
     state.movies.push(...minifyMovies(toAdd));
     flushState();
 
-    console.log(`[ADD] #${id}; Added ${toAdd.length} movies`);
+    console.log(`[ADD-MOVIES] #${id}; Added ${toAdd.length} movies`);
   }
 
-  console.log("[ADD] End");
+  console.log("[ADD-MOVIES] End");
 }

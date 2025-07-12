@@ -1,4 +1,4 @@
-import { addMovies } from "./add-scan/add.js";
+import { addMovies } from "./add-scan/add-movies.js";
 import { scanTvs } from "./add-scan/scan-tvs.js";
 import { scanMovies } from "./add-scan/scan-movies.js";
 import { doChecks } from "./checks/checks.js";
@@ -16,7 +16,7 @@ TODO
 */
 
 const addIds = process.argv
-  .find((a) => a.startsWith("add="))
+  .find((a) => a.startsWith("add-movies="))
   ?.split("=")
   .pop()!
   .split(",")
