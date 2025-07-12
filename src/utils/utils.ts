@@ -1,6 +1,7 @@
 import { readdirSync } from "fs";
 import { LIBRARIES } from "./constants.js";
 import { isPromise } from "util/types";
+import { TinyMovie } from "../models/tiny-movie.js";
 
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -12,14 +13,23 @@ export function nowMinusDays(days: number): number {
   return date.getTime();
 }
 
-export function readLibraries(): string[] {
-  return LIBRARIES.flatMap((l) => readdirSync(l.dir));
+export function findFile(movie: TinyMovie): string | undefined {
+  return LIBRARIES.filter((l) => l.type === movie.type)
+    .flatMap((l) => readdirSync(l.dir))
+    .find((f) => f.includes(getTmdbTag(movie.id)));
 }
 
-export function getTmdbTag(id: number, brackets?: boolean): string {
-  const tag = `tmdbid-${id}`;
+export function getQbTag(movie: TinyMovie): string {
+  switch (movie.type) {
+    case "movie":
+      return `tmdbid-${movie.id}`;
+    case "tv":
+      return `tv-${movie.id}`;
+  }
+}
 
-  return brackets ? `[${tag}]` : tag;
+export function getTmdbTag(id: number): string {
+  return `[tmdbid-${id}]`;
 }
 
 export function eventuallyDecodeUrl(url: string): string {

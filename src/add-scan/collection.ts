@@ -1,12 +1,12 @@
 import { RichMovie } from "../models/rich-movie.js";
 import { tmdb } from "../clients/tmdb.js";
 import { sleep } from "../utils/utils.js";
-import { skipMovie } from "./skip.js";
+import { skipExistingMovie, skipRecentOrUpcomingMovie } from "./skip.js";
 
 export async function scanCollection(
   collectionId: number,
   excludeIds: number[],
-  maxReleaseTime: number
+  maxReleaseDate: string
 ): Promise<RichMovie[]> {
   const collectionDetails = await tmdb.collections.details(collectionId, {
     language: "it-IT",
@@ -15,16 +15,17 @@ export async function scanCollection(
 
   const toRet = [];
 
-  for (const relatedMovie of collectionDetails.parts) {
+  for (const movie of collectionDetails.parts) {
     if (
-      skipMovie(relatedMovie, maxReleaseTime) ||
-      excludeIds.includes(relatedMovie.id)
+      skipExistingMovie("movie", movie.id) ||
+      skipRecentOrUpcomingMovie(movie.release_date, maxReleaseDate) ||
+      excludeIds.includes(movie.id)
     ) {
       continue;
     }
 
     const relatedDetailsRes = (await tmdb.movies.details(
-      relatedMovie.id,
+      movie.id,
       ["release_dates", "alternative_titles"],
       "it-IT"
     )) as RichMovie;

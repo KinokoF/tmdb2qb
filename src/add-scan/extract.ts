@@ -1,22 +1,33 @@
 import { RichMovie } from "../models/rich-movie.js";
+import { RichTv } from "../models/rich-tv.js";
 
-export function extractAltTitles(movie: RichMovie): string[] {
-  const countries = ["IT", "US", "GB", ...movie.origin_country];
+export function extractAltTitles(movieOrTv: RichMovie | RichTv): string[] {
+  const countries = ["IT", "US", "GB", ...movieOrTv.origin_country];
 
-  const titles = movie.alternative_titles.titles
+  const title = (movieOrTv as RichMovie).title ?? (movieOrTv as RichTv).name;
+  const originalTitle =
+    (movieOrTv as RichMovie).original_title ??
+    (movieOrTv as RichTv).original_name;
+
+  const titles = movieOrTv.alternative_titles.titles
     .filter((t) => countries.includes(t.iso_3166_1))
     .map((t) => t.title.toLowerCase());
 
-  const set = new Set([movie.original_title.toLowerCase(), ...titles]);
-  set.delete(movie.title.toLowerCase());
+  const set = new Set([originalTitle.toLowerCase(), ...titles]);
+  set.delete(title.toLowerCase());
 
   return [...set];
 }
 
-export function extractAltYears(movie: RichMovie, releaseDate: Date): number[] {
-  const countries = ["IT", "US", "GB", ...movie.origin_country];
+export function extractAltYears(
+  movieOrTv: RichMovie | RichTv,
+  releaseDate: Date
+): number[] {
+  const countries = ["IT", "US", "GB", ...movieOrTv.origin_country];
 
-  const years = movie.release_dates.results
+  const releaseDates = (movieOrTv as RichMovie).release_dates ?? [];
+
+  const years = releaseDates.results
     .filter((r) => countries.includes(r.iso_3166_1))
     .flatMap((r) => {
       const dates = r.release_dates

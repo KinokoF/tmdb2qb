@@ -10,12 +10,16 @@ export const CATEGORY_NAME = "TMDB2qb";
 export const CATEGORY_DIR = "/mnt/HDD1/In download";
 
 export const LIBRARIES = [
-  { regex: /^./, dir: "/mnt/HDD1/Film" },
-  // { regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
-  // { regex: /^./, dir: "/mnt/HDD1/Film (0-M)" },
+  { type: "movie", regex: /^./, dir: "/mnt/HDD1/Film" },
+  { type: "tv", regex: /^./, dir: "/mnt/HDD2/Miniserie" },
+  // { type: "movie", regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
+  // { type: "movie", regex: /^./, dir: "/mnt/HDD1/Film (0-M)" },
 ];
 
 export const MOVIES_TO_FETCH = 1000;
+export const TVS_TO_FETCH = 100;
+
+export const MIN_VOTE_COUNT = 300;
 
 export const MIN_DAYS_PASSED_SINCE_RELEASE = 30;
 export const SEARCH_RETRY_INTERVAL_IN_DAYS = 30;
@@ -97,3 +101,26 @@ export const BROKEN_PLUGIN_CHARS = ["❗", "✖", "❌", "Yggdrasil", "✖️", 
 
 export const OI_CHAT_ENDPOINT = "http://localhost:8080/api/chat/completions";
 export const OI_MODEL = "gemma3:12b";
+
+export const PROMPT_TEMPLATES = {
+  movie: `Return ONLY and EXCLUSIVELY the lowest file number that first matches the following movie in the following file list. Avoid files that are trilogies, sagas, or collections. Return -1 if no files match.
+
+MOVIE
+Title: {{TITLE}}
+Alternative titles: {{ALT_TITLES}}
+Year: {{YEAR}}
+Alternative years: {{ALT_YEARS}}
+
+FILE LIST
+{{FILE_LIST}}`,
+  tv: `Return ONLY and EXCLUSIVELY the lowest file number that first matches the following miniseries in the following file list. Avoid files that are trilogies, sagas, or collections. Return -1 if no files match.
+
+MINISERIES
+Title: {{TITLE}}
+Alternative titles: {{ALT_TITLES}}
+Year: {{YEAR}}
+Alternative years: {{ALT_YEARS}}
+
+FILE LIST
+{{FILE_LIST}}`,
+};

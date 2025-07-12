@@ -1,42 +1,52 @@
 import { state, flushState } from "../state.js";
 import {
   MIN_DAYS_PASSED_SINCE_RELEASE,
+  MIN_VOTE_COUNT,
   MOVIES_TO_FETCH,
 } from "../utils/constants.js";
 import { minifyMovies } from "./minify.js";
-import { nowMinusDays, sleep } from "../utils/utils.js";
-import { skipMovie } from "./skip.js";
+import { sleep } from "../utils/utils.js";
+import { skipExistingMovie } from "./skip.js";
 import { tmdb } from "../clients/tmdb.js";
 import { scanCollection } from "./collection.js";
 import moment from "moment";
 import { RichMovie } from "../models/rich-movie.js";
 
 export async function scanMovies(): Promise<void> {
-  console.log("[SCAN] Start");
+  console.log("[SCAN-MOVIES] Start");
 
-  if (!state.scan || state.scan.startTime < +moment().subtract(1, "d")) {
-    state.scan = { nextPage: 1, startTime: Date.now() };
+  if (
+    !state.movieScan ||
+    state.movieScan.startTime < +moment().subtract(1, "d")
+  ) {
+    state.movieScan = { nextPage: 1, startTime: Date.now() };
     flushState();
   }
 
-  const maxReleaseTime = nowMinusDays(MIN_DAYS_PASSED_SINCE_RELEASE);
+  const maxReleaseDate = moment()
+    .subtract(MIN_DAYS_PASSED_SINCE_RELEASE, "d")
+    .format("YYYY-MM-DD");
   let totalPages;
 
   for (
-    let i = state.scan.nextPage;
-    (!totalPages || i <= totalPages) && state.movies.length < MOVIES_TO_FETCH;
+    let i = state.movieScan.nextPage;
+    (!totalPages || i <= totalPages) &&
+    state.movies.filter((m) => m.type === "movie").length < MOVIES_TO_FETCH;
     i++
   ) {
-    const topRatedRes = await tmdb.movies.topRated({
+    const topRatedRes = await tmdb.discover.movie({
       language: "it-IT",
+      "release_date.lte": maxReleaseDate, // Or primary_release_date.lte?
+      "vote_count.gte": MIN_VOTE_COUNT,
       page: i,
+      sort_by: "vote_average.desc",
     });
     await sleep(20);
 
     totalPages = Math.min(topRatedRes.total_pages, 500);
 
     for (const movie of topRatedRes.results) {
-      if (skipMovie(movie, maxReleaseTime)) {
+      if (skipExistingMovie("movie", movie.id)) {
         continue;
       }
 
@@ -53,7 +63,7 @@ export async function scanMovies(): Promise<void> {
         const relMovies = await scanCollection(
           detailsRes.belongs_to_collection.id,
           [movie.id],
-          maxReleaseTime
+          maxReleaseDate
         );
         toAdd.push(...relMovies);
       }
@@ -62,13 +72,13 @@ export async function scanMovies(): Promise<void> {
       flushState();
 
       console.log(
-        `[SCAN] Page ${i}/${totalPages}; Added ${toAdd.length} movies`
+        `[SCAN-MOVIES] Page ${i}/${totalPages}; Added ${toAdd.length} movies`
       );
     }
 
-    state.scan.nextPage = Math.min(i + 1, totalPages);
+    state.movieScan.nextPage = Math.min(i + 1, totalPages);
     flushState();
   }
 
-  console.log("[SCAN] End");
+  console.log("[SCAN-MOVIES] End");
 }

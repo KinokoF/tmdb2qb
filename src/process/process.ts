@@ -12,8 +12,12 @@ import {
 } from "../utils/constants.js";
 import { searchMovie } from "./search.js";
 import { onComplete, onStale, deleteTorrent } from "./torrent.js";
-import { cleanUnsuccessSearch, onUnsuccessSearch } from "./unsuccess.js";
-import { getTmdbTag, nowMinusDays, readLibraries } from "../utils/utils.js";
+import {
+  cleanUnsuccessSearch,
+  findUnsuccessSearch,
+  onUnsuccessSearch,
+} from "./unsuccess.js";
+import { findFile, getQbTag, nowMinusDays } from "../utils/utils.js";
 import { TinyMovie } from "../models/tiny-movie.js";
 import { UnsuccessSearch } from "../models/unsuccess-search.js";
 import { RatedResult } from "../models/rated-result.js";
@@ -95,12 +99,10 @@ export async function processMovies(): Promise<void> {
 
   for (const movie of state.movies) {
     const torrent = torrents.find((t) =>
-      t.tags.split(",").includes(getTmdbTag(movie.id))
+      t.tags.split(",").includes(getQbTag(movie))
     );
-    const file = readLibraries().find((f) =>
-      f.includes(getTmdbTag(movie.id, true))
-    );
-    const search = state.unsuccessSearches.find((s) => s.movieId === movie.id);
+    const file = findFile(movie);
+    const search = findUnsuccessSearch(movie);
 
     if (!torrent && !file && (!search || search.searchedOn < searchRetryTime)) {
       await searchAndDownloadMovie(movie, search);

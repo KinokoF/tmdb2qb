@@ -1,4 +1,7 @@
+export type TinyMovieType = "movie" | "tv";
+
 export interface TinyMovie {
+  type: TinyMovieType;
   id: number;
   title: string;
   originalLang: string;

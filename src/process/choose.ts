@@ -1,23 +1,24 @@
 import { chat } from "../clients/oi.js";
 import { TinyMovie } from "../models/tiny-movie.js";
 import { ResultGroup } from "../models/result-group.js";
-import { OI_MODEL } from "../utils/constants.js";
+import { OI_MODEL, PROMPT_TEMPLATES } from "../utils/constants.js";
 import { retryOnError } from "../utils/utils.js";
 
 export async function chooseGroup(
   groups: ResultGroup[],
   movie: TinyMovie
 ): Promise<ResultGroup> {
-  const prompt = `Return ONLY and EXCLUSIVELY the lowest file number that first matches the following movie in the following file list. Avoid files that are trilogies, sagas, or collections. Return -1 if no files match.
-
-MOVIE
-Title: ${movie.title}
-Alternative titles: ${movie.altTitles.join(", ")}
-Year: ${movie.year}
-Alternative years: ${movie.altYears.join(", ")}
-
-FILE LIST
-${groups.map((g, i) => `${i + 1}. ${g.name}`).join("\n")}`;
+  const values = {
+    TITLE: movie.title,
+    ALT_TITLES: movie.altTitles.join(", "),
+    YEAR: String(movie.year),
+    ALT_YEARS: movie.altYears.join(", "),
+    FILE_LIST: groups.map((g, i) => `${i + 1}. ${g.name}`).join("\n"),
+  };
+  const prompt = Object.entries(values).reduce(
+    (a, [k, v]) => a.replace(k, v),
+    PROMPT_TEMPLATES[movie.type]
+  );
 
   const res = await retryOnError(
     async () =>

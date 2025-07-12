@@ -1,5 +1,6 @@
 import { addMovies } from "./add-scan/add.js";
-import { scanMovies } from "./add-scan/scan.js";
+import { scanTvs } from "./add-scan/scan-tvs.js";
+import { scanMovies } from "./add-scan/scan-movies.js";
 import { doChecks } from "./checks/checks.js";
 import { processMovies } from "./process/process.js";
 import { updatePlugins } from "./upd-plugins/upd-plugins.js";
@@ -11,7 +12,6 @@ TODO
 
 - Scremare titoli alternativi che sono superset ???
 - Esporre pagina web ???
-- Rivedere logica search
 
 */
 
@@ -28,7 +28,13 @@ if (addIds?.length) {
 
 do {
   if (!process.argv.includes("no-scan")) {
-    await scanMovies();
+    if (!process.argv.includes("no-scan-movies")) {
+      await scanMovies();
+    }
+
+    if (!process.argv.includes("no-scan-tvs")) {
+      await scanTvs();
+    }
   }
 
   if (!process.argv.includes("no-checks")) {

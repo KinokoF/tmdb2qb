@@ -1,20 +1,13 @@
-import { Movie } from "tmdb-ts";
 import { state } from "../state.js";
+import { TinyMovieType } from "../models/tiny-movie.js";
 
-export function skipMovie(movie: Movie, maxReleaseTime: number): boolean {
-  return (
-    skipExistingMovie(movie.id) ||
-    skipRecentOrUpcomingMovie(movie.release_date, maxReleaseTime)
-  );
-}
-
-export function skipExistingMovie(id: number): boolean {
-  return state.movies.some((m) => m.id === id);
+export function skipExistingMovie(type: TinyMovieType, id: number): boolean {
+  return state.movies.some((m) => m.id === id && m.type === type);
 }
 
 export function skipRecentOrUpcomingMovie(
   releaseDate: string,
-  maxReleaseTime: number
+  maxReleaseDate: string
 ): boolean {
-  return releaseDate === "" || new Date(releaseDate).getTime() > maxReleaseTime;
+  return releaseDate === "" || releaseDate > maxReleaseDate;
 }

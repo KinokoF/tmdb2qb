@@ -3,7 +3,7 @@ import { RawTorrentV2 } from "../models/raw-torrent-v2.js";
 import { TinyMovie } from "../models/tiny-movie.js";
 import { deleteTorrents, loginQb, qb, resumeTorrents } from "../clients/qb.js";
 import { state, flushState } from "../state.js";
-import { getTmdbTag, sleep } from "../utils/utils.js";
+import { getQbTag, getTmdbTag, sleep } from "../utils/utils.js";
 import { CATEGORY_NAME, LIBRARIES } from "../utils/constants.js";
 import { extname } from "path";
 
@@ -11,7 +11,7 @@ export async function startDownload(
   urls: string[],
   movie: TinyMovie
 ): Promise<boolean> {
-  const tag = getTmdbTag(movie.id);
+  const tag = getQbTag(movie);
 
   await loginQb();
   await qb.api.addTorrent(urls, {
@@ -20,7 +20,6 @@ export async function startDownload(
     tags: [tag],
   });
 
-  // TODO: Verificare che risolva problema torrent doppioni
   await sleep(urls.length * 2_000);
 
   await loginQb();
@@ -45,8 +44,10 @@ export async function onComplete(
   torrent: RawTorrentV2,
   movie: TinyMovie
 ): Promise<void> {
-  const name = `${movie.title} (${movie.year}) ${getTmdbTag(movie.id, true)}`;
-  const lib = LIBRARIES.find((l) => name.match(l.regex))!;
+  const name = `${movie.title} (${movie.year}) ${getTmdbTag(movie.id)}`;
+  const lib = LIBRARIES.filter((l) => l.type === movie.type).find((l) =>
+    name.match(l.regex)
+  )!;
 
   if (lstatSync(torrent.content_path).isFile()) {
     const ext = extname(torrent.content_path);
