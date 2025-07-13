@@ -113,7 +113,7 @@ Alternative years: {{ALT_YEARS}}
 
 FILE LIST
 {{FILE_LIST}}`,
-  tv: `Return ONLY and EXCLUSIVELY the lowest file number that first matches the following miniseries in the following file list. Avoid files that are trilogies, sagas, or collections. Return -1 if no files match.
+  tv: `Return ONLY and EXCLUSIVELY the lowest file number that first matches the following miniseries in the following file list. Avoid files that don't appear to include all the episodes. Return -1 if no files match.
 
 MINISERIES
 Title: {{TITLE}}
