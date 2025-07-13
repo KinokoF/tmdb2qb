@@ -32,10 +32,8 @@ export function extractAltYears(
     ? (movieOrTv as RichMovie).release_dates.results
         .filter((r) => countries.includes(r.iso_3166_1))
         .flatMap((r) => {
-          const dates = r.release_dates
-            .map((d) => new Date(d.release_date))
-            .sort((a, b) => a.getTime() - b.getTime());
-          const minDate = dates[0];
+          const dates = r.release_dates.map((d) => d.release_date).sort();
+          const minDate = new Date(dates[0]);
           return [minDate.getFullYear(), minDate.getUTCFullYear()];
         })
     : [];

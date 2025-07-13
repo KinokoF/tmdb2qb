@@ -3,6 +3,15 @@ import { LIBRARIES } from "./constants.js";
 import { isPromise } from "util/types";
 import { TinyMovie } from "../models/tiny-movie.js";
 
+export function extractArgIds(arg: string): number[] | undefined {
+  return process.argv
+    .find((a) => a.startsWith(`${arg}=`))
+    ?.split("=")
+    .pop()!
+    .split(",")
+    .map(Number);
+}
+
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -4,7 +4,8 @@ import { scanMovies } from "./add-scan/scan-movies.js";
 import { doChecks } from "./checks/checks.js";
 import { processMovies } from "./process/process.js";
 import { updatePlugins } from "./upd-plugins/upd-plugins.js";
-import { sleep } from "./utils/utils.js";
+import { extractArgIds, sleep } from "./utils/utils.js";
+import { addTvs } from "./add-scan/add-tvs.js";
 
 /*
 
@@ -15,15 +16,16 @@ TODO
 
 */
 
-const addIds = process.argv
-  .find((a) => a.startsWith("add-movies="))
-  ?.split("=")
-  .pop()!
-  .split(",")
-  .map(Number);
+const movieIds = extractArgIds("add-movies");
 
-if (addIds?.length) {
-  await addMovies(addIds);
+if (movieIds?.length) {
+  await addMovies(movieIds);
+}
+
+const tvIds = extractArgIds("add-tvs");
+
+if (tvIds?.length) {
+  await addTvs(tvIds);
 }
 
 do {
