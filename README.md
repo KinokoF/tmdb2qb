@@ -27,7 +27,7 @@ Installa l'ultima versione di qBittorrent, quindi applica le seguenti configuraz
 - WebUI -> Inserire 999999 nel campo "Timeout sessione" (valore arbitrariamente alto)
 
 ### 2. Installa Node.js e Git
-Installa le ultime versioni di Node.js e Git
+Installa le ultime versioni di Node.js e Git.
 
 ### 3. Installa/utilizza Open WebUI
 Per la configurazione occorre un token Open WebUI, scegli liberamente se:
