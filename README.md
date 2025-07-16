@@ -12,8 +12,8 @@ L'applicativo segue i seguenti passi:
 - Recupera i migliori film e miniserie, in ordine di voto, tramite le API di TMDB
 - Aggiorna i plugin di qBittorrent (disinstallando quelli preesistenti e installando tutti quelli listati nei due repository preconfigurati)
 - Elabora ogni film/miniserie:
--- Ricercando, valutando e scaricando gli elementi non ancora scaricati
--- Eliminando i download in stallo da molto tempo e tentando una nuova ricerca
+  - Ricercando, valutando e scaricando gli elementi non ancora scaricati
+  - Eliminando i download in stallo da molto tempo e tentando una nuova ricerca
 - Aspetta un po', quindi riparte dal primo passo
 
 ## Installazione
@@ -101,8 +101,8 @@ Personalizza l'esecuzione specificando i seguenti argomenti:
 - `add-movies=123,456`: Aggiunge forzatamente gli id TMDB (separati da virgola) a quelli da elaborare
 - `add-tvs=789,012`: Aggiunge forzatamente gli id TMDB (separati da virgola) a quelli da elaborare
 - `no-scan`: Disattiva entrambe le scansioni
--- `no-scan-movies`: Disattiva la scansione dei film
--- `no-scan-tvs`: Disattiva la scansione delle miniserie
+  - `no-scan-movies`: Disattiva la scansione dei film
+  - `no-scan-tvs`: Disattiva la scansione delle miniserie
 - `no-upd-plugins`: Disattiva l'update dei plugin
 - `no-process`: Disattiva l'elaborazione dei film/miniserie
 - `no-loop`: Disattiva il loop
