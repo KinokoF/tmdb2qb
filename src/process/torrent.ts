@@ -20,7 +20,7 @@ export async function startDownload(
     tags: [tag],
   });
 
-  await sleep(urls.length * 2_000);
+  await sleep(urls.length * 6_000);
 
   await loginQb();
   const torrents = (await qb.api.getTorrents({
@@ -52,7 +52,15 @@ export async function onComplete(
   if (lstatSync(torrent.content_path).isFile()) {
     const ext = extname(torrent.content_path);
 
-    renameSync(torrent.content_path, `${lib.dir}/${name}${ext}`);
+    try {
+      renameSync(torrent.content_path, `${lib.dir}/${name}${ext}`);
+    } catch (error: any) {
+      if (error.code === "EXDEV") {
+        cpSync(torrent.content_path, `${lib.dir}/${name}${ext}`);
+      } else {
+        throw error;
+      }
+    }
   } else {
     cpSync(torrent.content_path, `${lib.dir}/${name}`, { recursive: true });
   }

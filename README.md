@@ -99,10 +99,10 @@ npm run start:prod
 ## Parametri in input
 Personalizza l'esecuzione specificando i seguenti argomenti:
 - `add-movies=123,456`: Aggiunge forzatamente gli id TMDB (separati da virgola) a quelli da elaborare
-- `add-tvs=789,012`: Aggiunge forzatamente gli id TMDB (separati da virgola) a quelli da elaborare
-- `no-scan`: Disattiva entrambe le scansioni
-  - `no-scan-movies`: Disattiva la scansione dei film
-  - `no-scan-tvs`: Disattiva la scansione delle miniserie
+- `add-tvs=789`: Aggiunge forzatamente gli id TMDB (separati da virgola) a quelli da elaborare
+- `no-scan`: Disattiva entrambe le scansioni TMDB
+  - `no-scan-movies`: Disattiva la scansione TMDB dei film
+  - `no-scan-tvs`: Disattiva la scansione TMDB delle miniserie
 - `no-upd-plugins`: Disattiva l'update dei plugin
 - `no-process`: Disattiva l'elaborazione dei film/miniserie
 - `no-loop`: Disattiva il loop
@@ -117,3 +117,7 @@ Se vuoi ripartire da zero puoi:
 Cose da implementare (prima o poi):
 - Spostare la configurazione in un file `config.json`
 - Parametrizzare la lingua primaria e secondaria (attualmente sono hardcodate)
+
+## Software amico
+Software che potrebbe tornarti utile:
+- Jellyfin

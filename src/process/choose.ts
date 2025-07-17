@@ -27,7 +27,7 @@ export async function chooseGroup(
         messages: [{ role: "user", content: prompt }],
       }),
     3,
-    30_000
+    5 * 60_000
   );
   const index = Number(res.choices[0].message.content) - 1;
   return groups[index];
