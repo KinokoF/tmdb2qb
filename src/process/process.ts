@@ -24,6 +24,7 @@ import { RatedResult } from "../models/rated-result.js";
 import { calcRating } from "./rating.js";
 import { filterResult } from "./filter.js";
 import { chooseAndDownload } from "./download.js";
+import { LANGS } from "../utils/derived-consts.js";
 
 async function searchAndDownloadMovie(
   movie: TinyMovie,
@@ -41,7 +42,9 @@ async function searchAndDownloadMovie(
     ...TITLE_ALT_WHITESPACES.map((w) => t.replace(" ", w)),
   ]);
 
-  const queries = titles.flatMap((t) => years.map((y) => `${t} ${y} ita`));
+  const queries = titles.flatMap((t) =>
+    years.flatMap((y) => LANGS.map((l) => `${t} ${y} ${l}`))
+  );
   const alreadyTested: RatedResult[] = [];
   const lastChance: RatedResult[] = [];
 

@@ -26,7 +26,9 @@ import {
   LOSSLESS_AUD_REGEXS,
   BEST_LOSSY_AUD_REGEXS,
   GOOD_LOSSY_AUD_REGEXS,
+  OPTIONAL_LANGS,
 } from "../utils/constants.js";
+import { LOCALE } from "../utils/derived-consts.js";
 
 export function calcRating(name: string, movie: TinyMovie): number {
   const loweredName = name.toLowerCase();
@@ -92,22 +94,24 @@ export function calcRating(name: string, movie: TinyMovie): number {
   }
 
   // Other languages
-  const a3t = toAlpha3T(movie.originalLang);
-  const a3b = toAlpha3B(movie.originalLang);
-  const enName = getName(movie.originalLang, "en");
+  const compLangs = OPTIONAL_LANGS.map((l) =>
+    l === "$ORIGINAL$" ? movie.originalLang : l
+  );
+  const langs = new Set(compLangs);
 
-  if (
-    loweredName.match(`([ _.([-]+|^)(${a3t}|${a3b}|${enName})([ _.)\\]-]+|$)`)
-      ?.length
-  ) {
-    rating += 100;
-  }
+  for (const lang of langs) {
+    const a3t = toAlpha3T(lang);
+    const a3b = toAlpha3B(lang);
+    const locName = getName(lang, LOCALE.language);
+    const enName = getName(lang, "en");
 
-  if (
-    movie.originalLang !== "en" &&
-    loweredName.match("([ _.([-]+|^)(eng|english)([ _.)\\]-]+|$)")?.length
-  ) {
-    rating += 100;
+    if (
+      loweredName.match(
+        `([ _.([-]+|^)(${a3t}|${a3b}|${locName}|${enName})([ _.)\\]-]+|$)`
+      )?.length
+    ) {
+      rating += 100;
+    }
   }
 
   // Ripper

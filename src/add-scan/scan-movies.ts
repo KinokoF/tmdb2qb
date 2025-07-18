@@ -3,6 +3,7 @@ import {
   MIN_DAYS_PASSED_SINCE_RELEASE,
   MIN_VOTE_COUNT,
   MOVIES_TO_FETCH,
+  LOCALE_TAG,
 } from "../utils/constants.js";
 import { minifyMovies } from "./minify.js";
 import { sleep } from "../utils/utils.js";
@@ -35,7 +36,7 @@ export async function scanMovies(): Promise<void> {
     i++
   ) {
     const topRatedRes = await tmdb.discover.movie({
-      language: "it-IT",
+      language: LOCALE_TAG,
       "release_date.lte": maxReleaseDate, // Or primary_release_date.lte?
       "vote_count.gte": MIN_VOTE_COUNT,
       page: i,
@@ -53,7 +54,7 @@ export async function scanMovies(): Promise<void> {
       const detailsRes = (await tmdb.movies.details(
         movie.id,
         ["release_dates", "alternative_titles"],
-        "it-IT"
+        LOCALE_TAG
       )) as RichMovie;
       await sleep(20);
 

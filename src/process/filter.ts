@@ -2,6 +2,7 @@ import Fuse from "fuse.js";
 import { state } from "../state.js";
 import { VIRUS_REGEXS } from "../utils/constants.js";
 import { RawSearchResult } from "qbit.js";
+import { LANG } from "../utils/derived-consts.js";
 
 function checkName(name: string, titles: string[]): boolean {
   const fuse = new Fuse([name], {
@@ -29,7 +30,9 @@ export function filterResult(
     !!name &&
     !state.blacklist.includes(name) &&
     !VIRUS_REGEXS.some((r) => name.match(r)?.length) &&
-    !!name.match("([ _.([-]+|^)(ita|italian)([ _.)\\]-]+|$)")?.length &&
+    !!name.match(
+      `([ _.([-]+|^)(${LANG.a3b}|${LANG.a3t}|${LANG.locName}|${LANG.enName})([ _.)\\]-]+|$)`
+    )?.length &&
     years.some((y) => name.match(`([ _.([-]+|^)${y}([ _.)\\]-]+|$)`)?.length) &&
     checkName(name, titles)
   );

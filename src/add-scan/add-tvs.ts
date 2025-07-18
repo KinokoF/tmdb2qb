@@ -3,7 +3,10 @@ import { tmdb } from "../clients/tmdb.js";
 import { sleep } from "../utils/utils.js";
 import { minifyTv } from "./minify.js";
 import { skipExistingMovie, skipRecentOrUpcomingMovie } from "./skip.js";
-import { MIN_DAYS_PASSED_SINCE_RELEASE } from "../utils/constants.js";
+import {
+  MIN_DAYS_PASSED_SINCE_RELEASE,
+  LOCALE_TAG,
+} from "../utils/constants.js";
 import moment from "moment";
 import { calcTvRuntime } from "./runtime.js";
 
@@ -22,7 +25,7 @@ export async function addTvs(ids: number[]): Promise<void> {
     const detailsRes = await tmdb.tvShows.details(
       id,
       ["alternative_titles"],
-      "it-IT"
+      LOCALE_TAG
     );
     await sleep(20);
 
