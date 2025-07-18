@@ -1,139 +1,138 @@
 # TMDB2qb
 The Movie Database to qBittorrent
 
-## Premessa
-I file torrent potrebbero veicolare contenuti protetti da copyright. Assicurati di NON violare MAI le leggi del tuo paese.
+## Premise
+Torrent files might carry copyrighted content. Make sure you NEVER violate your country's laws.
 
-## Cosa è?
-Un applicativo console scritto in TypeScript che automatizza il download di film e miniserie.
+## What is it?
+A console application written in TypeScript that automates the download of movies and miniseries.
 
-## Come funziona?
-L'applicativo segue i seguenti passi:
-- Recupera i migliori film e miniserie, in ordine di voto, tramite le API di TMDB
-- Aggiorna i plugin di qBittorrent (disinstallando quelli preesistenti e installando tutti quelli listati nei due repository preconfigurati)
-- Elabora ogni film/miniserie:
-  - Ricercando, valutando e scaricando gli elementi non ancora scaricati
-  - Eliminando i download in stallo da molto tempo e tentando una nuova ricerca
-- Aspetta un po', quindi riparte dal primo passo
+## How does it work?
+The application follows these steps:
+- Retrieves the best movies and miniseries, in order of rating, via the TMDB APIs
+- Updates qBittorrent plugins (uninstalling existing ones and installing all those listed in the two pre-configured repositories)
+- Processes each movie/miniseries:
+  - Searching, evaluating, and downloading items not yet downloaded
+  - Deleting long-stalled downloads and attempting a new search
+- Waits a while, then restarts from the first step
 
-## Installazione
+## Installation
 
-### 1. Installa e configura qBittorrent
-Installa l'ultima versione di qBittorrent, quindi applica le seguenti configurazioni:
-- Download -> Spuntare "Non avviare il download automaticamente"
-- Download -> Selezionare "Automatica" nel campo "Modalità gestione torrent predefinita"
-- WebUI -> Spuntare "Interfaccia utente web (controllo remoto)"
-- WebUI -> Inserire una password nel campo "Password"
-- WebUI -> Inserire 999999 nel campo "Timeout sessione" (valore arbitrariamente alto)
+### 1. Install and configure qBittorrent
+Install the latest version of qBittorrent, then apply the following configurations:
+- Downloads -> Check "Do not start the download automatically"
+- Downloads -> Select "Automatic" in the "Default torrent management mode" field
+- WebUI -> Check "Web User Interface (remote control)"
+- WebUI -> Enter a password in the "Password" field
+- WebUI -> Enter 999999 in the "Session timeout" field (arbitrarily high value)
 
-### 2. Installa Node.js e Git
-Installa le ultime versioni di Node.js e Git.
+### 2. Install Node.js and Git
+Install the latest versions of Node.js and Git.
 
-### 3. Installa/utilizza Open WebUI
-Per la configurazione occorre un token Open WebUI, scegli liberamente se:
-- Installare Open WebUI e affiancarlo a Ollama
-- Installare Open WebUI e usarlo come tramite per una qualsiasi AI
-- Usare una installazione Open WebUI preesistente
+### 3. Install/use Open WebUI
+For configuration, an Open WebUI token is required; feel free to choose whether to:
+- Install Open WebUI and pair it with Ollama
+- Install Open WebUI and use it as a proxy for any AI
+- Use an existing Open WebUI installation
 
-### 4. Scarica il progetto
-Posizionati nella cartella desiderata ed esegui:
+### 4. Download the project
+Navigate to your desired folder and execute:
 ```bash
 git clone https://github.com/KinokoF/tmdb2qb.git
 ```
 
-## Configurazione
+## Configuration
 
-### 1. File secret.ts
-Crea il file `utils/secret.ts` con il seguente contenuto:
+### 1. secret.ts file
+Create the `utils/secret.ts` file with the following content:
 ```ts
-export const QB_USER = "<username di qBittorrent>";
-export const QB_PASS = "<password di qBittorrent>";
+export const QB_USER = "<qBittorrent username>";
+export const QB_PASS = "<qBittorrent password>";
 
-export const TMDB_TOKEN = "<chiave API di TMDB>";
+export const TMDB_TOKEN = "<TMDB API key>";
 
-export const OI_TOKEN = "<chiave API di Open WebUI>";
+export const OI_TOKEN = "<Open WebUI API key>";
 ```
 
-### 2. File constants.ts
-Modifica il file `utils/constants.ts` adattandolo alle tue esigenze. Qui puoi, per esempio, personalizzare:
+### 2. constants.ts file
+Modify the `utils/constants.ts` file to suit your needs. Here you can, for example, customize:
 ```ts
-// Cartella nella quale scaricare i file
+// Folder to download files to
 export const CATEGORY_DIR = "/mnt/HDD1/In download";
 
-// Cartelle dove spostare i file completati
-// (usa le regex per smistare i file in base al loro nome)
+// Folders to move completed files to
+// (use regex to sort files based on their name)
 export const LIBRARIES = [
   { type: "movie", regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
   { type: "movie", regex: /^./, dir: "/mnt/HDD1/Film (0-M)" },
   { type: "tv", regex: /^./, dir: "/mnt/HDD2/Miniserie" },
 ];
 
-// Numero di film e miniserie da scaricare
+// Number of movies and miniseries to fetch
 export const MOVIES_TO_FETCH = 1000;
 export const TVS_TO_FETCH = 100;
 
-// Numero di giorni minimi trascorsi dalla data di uscita
+// Minimum number of days passed since the release date
 export const MIN_DAYS_PASSED_SINCE_RELEASE = 30;
 
-// Numero di giorni dopo i quali riprovare una ricerca fallita
+// Number of days after which to retry a failed search
 export const SEARCH_RETRY_INTERVAL_IN_DAYS = 30;
 
-// Numero di giorni a disposizione per completare il download
+// Number of days available to complete the download
 export const MAX_DAYS_TO_COMPLETE_DOWNLOAD = 30;
 
-// Coefficenti da moltiplicare alla durata per determinare la dimensione minima e massima del file in MB
+// Coefficients to multiply by duration to determine minimum and maximum file size in MB
 export const MIN_FILE_SIZE_RUNTIME_COEF = 2;
 export const MAX_FILE_SIZE_RUNTIME_COEF = 100;
 
-// In che lingua vuoi scaricare i contenuti?
+// In which language do you want to download the content?
 export const LANG = "it";
 
-// Una nazione dove tale lingua è molto parlata
+// A country where that language is widely spoken
 export const COUNTRY = "IT";
 
-// Ulteriori nazioni per l'estrazione di titoli e date d'uscita alternativi
-// (più ne metti più la ricerca sarà lenta e accurata)
+// Additional countries for extracting alternative titles and release dates
+// (the more you add, the slower and more accurate the search will be)
 export const ADDITIONAL_COUNTRIES = ["US", "GB"];
 
-// Lingue aggiuntive opzionali nice-to-have (max 4)
-// (specifica $ORIGINAL$ per la lingua originale del contenuto)
+// Optional nice-to-have additional languages (max 4)
+// (specify $ORIGINAL$ for the content's original language)
 export const OPTIONAL_LANGS = ["$ORIGINAL$", "en"];
 
-// Non dimenticarti di revisionare ed espandere le regex per supportare al meglio la tua lingua!
+// Don't forget to review and expand the regexes to better support your language!
 
-// ...e tanto altro!
+// ...and much more!
 ```
 
-## Avvio
-Esegui i seguenti comandi:
+## Startup
+Execute the following commands:
 ```bash
 cd tmdb2qb
 npm run build
 npm run start:prod
 ```
 
-## Parametri in input
-Personalizza l'esecuzione specificando i seguenti argomenti:
-- `add-movies=123,456`: Aggiunge forzatamente gli id TMDB (separati da virgola) a quelli da elaborare
-- `add-tvs=789`: Aggiunge forzatamente gli id TMDB (separati da virgola) a quelli da elaborare
-- `no-scan`: Disattiva entrambe le scansioni TMDB
-  - `no-scan-movies`: Disattiva la scansione TMDB dei film
-  - `no-scan-tvs`: Disattiva la scansione TMDB delle miniserie
-- `no-upd-plugins`: Disattiva l'update dei plugin
-- `no-process`: Disattiva l'elaborazione dei film/miniserie
-- `no-loop`: Disattiva il loop
+## Input parameters
+Customize execution by specifying the following arguments:
+- `add-movies=123,456`: Forcefully adds TMDB IDs (comma-separated) to those to be processed
+- `add-tvs=789`: Forcefully adds TMDB IDs (comma-separated) to those to be processed
+- `no-scan`: Deactivates both TMDB scans
+  - `no-scan-movies`: Deactivates TMDB movie scan
+  - `no-scan-tvs`: Deactivates TMDB miniseries scan
+- `no-upd-plugins`: Deactivates plugin update
+- `no-process`: Deactivates movie/miniseries processing
+- `no-loop`: Deactivates the loop
 
-## Pulizia
-Se vuoi ripartire da zero puoi:
-- Rimuovere tutti i torrent, la categoria `TMDB2qb` e tutte le etichette da qBittorrent
-- Elimina il file `state.json` (dentro la cartella `tmdb2qb`)
-- Elimina i file scaricati
+## Cleanup
+If you want to start from scratch, you can:
+- Remove all torrents, the `TMDB2qb` category, and all labels from qBittorrent
+- Delete the `state.json` file (inside the `tmdb2qb` folder)
+- Delete the downloaded files
 
 ## TODO
-Cose da implementare (prima o poi):
-- Spostare la configurazione in un file `config.json`
-- Parametrizzare la lingua primaria e secondaria (attualmente sono hardcodate)
+Things to implement (sooner or later):
+- Move configuration to a `config.json` file
 
-## Software amico
-Software che potrebbe tornarti utile:
+## Friend software
+Software that might be useful:
 - Jellyfin
