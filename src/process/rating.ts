@@ -27,8 +27,8 @@ import {
   BEST_LOSSY_AUD_REGEXS,
   GOOD_LOSSY_AUD_REGEXS,
   OPTIONAL_LANGS,
+  LANG,
 } from "../utils/constants.js";
-import { LOCALE } from "../utils/derived-consts.js";
 
 export function calcRating(name: string, movie: TinyMovie): number {
   const loweredName = name.toLowerCase();
@@ -102,7 +102,7 @@ export function calcRating(name: string, movie: TinyMovie): number {
   for (const lang of langs) {
     const a3t = toAlpha3T(lang);
     const a3b = toAlpha3B(lang);
-    const locName = getName(lang, LOCALE.language);
+    const locName = getName(lang, LANG);
     const enName = getName(lang, "en");
 
     if (
