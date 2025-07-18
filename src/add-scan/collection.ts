@@ -2,7 +2,7 @@ import { RichMovie } from "../models/rich-movie.js";
 import { tmdb } from "../clients/tmdb.js";
 import { sleep } from "../utils/utils.js";
 import { skipExistingMovie, skipRecentOrUpcomingMovie } from "./skip.js";
-import { LOCALE_TAG } from "../utils/constants.js";
+import { LANG_TAG } from "../utils/derived-consts.js";
 
 export async function scanCollection(
   collectionId: number,
@@ -10,7 +10,7 @@ export async function scanCollection(
   maxReleaseDate: string
 ): Promise<RichMovie[]> {
   const collectionDetails = await tmdb.collections.details(collectionId, {
-    language: LOCALE_TAG,
+    language: LANG_TAG,
   });
   await sleep(20);
 
@@ -28,7 +28,7 @@ export async function scanCollection(
     const relatedDetailsRes = (await tmdb.movies.details(
       movie.id,
       ["release_dates", "alternative_titles"],
-      LOCALE_TAG
+      LANG_TAG
     )) as RichMovie;
     await sleep(20);
 

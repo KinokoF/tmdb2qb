@@ -4,12 +4,10 @@ import { sleep } from "../utils/utils.js";
 import { scanCollection } from "./collection.js";
 import { minifyMovies } from "./minify.js";
 import { skipExistingMovie, skipRecentOrUpcomingMovie } from "./skip.js";
-import {
-  MIN_DAYS_PASSED_SINCE_RELEASE,
-  LOCALE_TAG,
-} from "../utils/constants.js";
+import { MIN_DAYS_PASSED_SINCE_RELEASE } from "../utils/constants.js";
 import { RichMovie } from "../models/rich-movie.js";
 import moment from "moment";
+import { LANG_TAG } from "../utils/derived-consts.js";
 
 export async function addMovies(ids: number[]): Promise<void> {
   console.log("[ADD-MOVIES] Start");
@@ -26,7 +24,7 @@ export async function addMovies(ids: number[]): Promise<void> {
     const detailsRes = (await tmdb.movies.details(
       id,
       ["release_dates", "alternative_titles"],
-      LOCALE_TAG
+      LANG_TAG
     )) as RichMovie;
     await sleep(20);
 

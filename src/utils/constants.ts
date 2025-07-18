@@ -30,7 +30,8 @@ export const MAX_FILE_SIZE_RUNTIME_COEF = 100;
 
 export const TITLE_ALT_WHITESPACES = ["_", ".", "-"];
 
-export const LOCALE_TAG = "it-IT";
+export const LANG = "it";
+export const COUNTRY = "IT";
 export const OPTIONAL_LANGS = ["$ORIGINAL$", "en"];
 
 export const RES_2160_REGEXS = [/([ _.([-]+|^)(2160p?|4k)([ _.)\]-]+|$)/];

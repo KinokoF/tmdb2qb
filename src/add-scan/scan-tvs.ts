@@ -2,7 +2,6 @@ import { state, flushState } from "../state.js";
 import {
   MIN_DAYS_PASSED_SINCE_RELEASE,
   MIN_VOTE_COUNT,
-  LOCALE_TAG,
   TVS_TO_FETCH,
 } from "../utils/constants.js";
 import { minifyTv } from "./minify.js";
@@ -11,6 +10,7 @@ import { skipExistingMovie } from "./skip.js";
 import { tmdb } from "../clients/tmdb.js";
 import moment from "moment";
 import { calcTvRuntime } from "./runtime.js";
+import { LANG_TAG } from "../utils/derived-consts.js";
 
 export async function scanTvs(): Promise<void> {
   console.log("[SCAN-TVS] Start");
@@ -48,7 +48,7 @@ export async function scanTvs(): Promise<void> {
     // 4 => Canceled
     // 5 => Pilot
     const topRatedRes = await tmdb.discover.tvShow({
-      language: LOCALE_TAG,
+      language: LANG_TAG,
       "first_air_date.lte": maxReleaseDate, // Or air_date.lte?
       "vote_count.gte": MIN_VOTE_COUNT,
       with_type: "2",
@@ -68,7 +68,7 @@ export async function scanTvs(): Promise<void> {
       const detailsRes = await tmdb.tvShows.details(
         tv.id,
         ["alternative_titles"],
-        LOCALE_TAG
+        LANG_TAG
       );
       await sleep(20);
 
