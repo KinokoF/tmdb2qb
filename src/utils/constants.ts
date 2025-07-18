@@ -32,6 +32,7 @@ export const TITLE_ALT_WHITESPACES = ["_", ".", "-"];
 
 export const LANG = "it";
 export const COUNTRY = "IT";
+export const ADDITIONAL_COUNTRIES = ["US", "GB"];
 export const OPTIONAL_LANGS = ["$ORIGINAL$", "en"];
 
 export const RES_2160_REGEXS = [/([ _.([-]+|^)(2160p?|4k)([ _.)\]-]+|$)/];

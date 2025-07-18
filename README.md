@@ -61,7 +61,7 @@ Modifica il file `utils/constants.ts` adattandolo alle tue esigenze. Qui puoi, p
 export const CATEGORY_DIR = "/mnt/HDD1/In download";
 
 // Cartelle dove spostare i file completati
-// (il nome del file dovrà matchare la regex)
+// (usa le regex per smistare i file in base al loro nome)
 export const LIBRARIES = [
   { type: "movie", regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
   { type: "movie", regex: /^./, dir: "/mnt/HDD1/Film (0-M)" },
@@ -84,6 +84,22 @@ export const MAX_DAYS_TO_COMPLETE_DOWNLOAD = 30;
 // Coefficenti da moltiplicare alla durata per determinare la dimensione minima e massima del file in MB
 export const MIN_FILE_SIZE_RUNTIME_COEF = 2;
 export const MAX_FILE_SIZE_RUNTIME_COEF = 100;
+
+// In che lingua vuoi scaricare i contenuti?
+export const LANG = "it";
+
+// Una nazione dove tale lingua è molto parlata
+export const COUNTRY = "IT";
+
+// Ulteriori nazioni per l'estrazione di titoli e date d'uscita alternativi
+// (più ne metti più la ricerca sarà lenta e accurata)
+export const ADDITIONAL_COUNTRIES = ["US", "GB"];
+
+// Lingue aggiuntive opzionali nice-to-have (max 4)
+// (specifica $ORIGINAL$ per la lingua originale del contenuto)
+export const OPTIONAL_LANGS = ["$ORIGINAL$", "en"];
+
+// Non dimenticarti di revisionare ed espandere le regex per supportare al meglio la tua lingua!
 
 // ...e tanto altro!
 ```

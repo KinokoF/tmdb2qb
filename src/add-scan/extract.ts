@@ -1,9 +1,13 @@
 import { RichMovie } from "../models/rich-movie.js";
 import { RichTv } from "../models/rich-tv.js";
-import { COUNTRY } from "../utils/constants.js";
+import { ADDITIONAL_COUNTRIES, COUNTRY } from "../utils/constants.js";
 
 export function extractAltTitles(movieOrTv: RichMovie | RichTv): string[] {
-  const countries = [COUNTRY, "US", "GB", ...movieOrTv.origin_country];
+  const countries = [
+    COUNTRY,
+    ...ADDITIONAL_COUNTRIES,
+    ...movieOrTv.origin_country,
+  ];
 
   const title = (movieOrTv as RichMovie).title ?? (movieOrTv as RichTv).name;
   const originalTitle =
@@ -27,7 +31,11 @@ export function extractAltYears(
   movieOrTv: RichMovie | RichTv,
   releaseDate: Date
 ): number[] {
-  const countries = [COUNTRY, "US", "GB", ...movieOrTv.origin_country];
+  const countries = [
+    COUNTRY,
+    ...ADDITIONAL_COUNTRIES,
+    ...movieOrTv.origin_country,
+  ];
 
   const years = (movieOrTv as RichMovie).release_dates
     ? (movieOrTv as RichMovie).release_dates.results
