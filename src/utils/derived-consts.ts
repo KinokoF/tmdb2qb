@@ -1,9 +1,15 @@
 import {
+  registerLocale,
   toAlpha3B,
   toAlpha3T,
   getName,
 } from "@cospired/i18n-iso-languages/index.js";
-import { COUNTRY, LANG } from "./constants.js";
+import { LANG, COUNTRY } from "./constants.js";
+
+const promises = [LANG, "en"]
+  .map((l) => `@cospired/i18n-iso-languages/langs/${l}.json`)
+  .map((p) => import(p, { with: { type: "json" } }));
+(await Promise.all(promises)).forEach((d) => registerLocale(d));
 
 export const LANG_TAG = `${LANG}-${COUNTRY}`;
 export const LANG_A3B = toAlpha3B(LANG);
