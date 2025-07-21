@@ -102,8 +102,8 @@ export function calcRating(name: string, movie: TinyMovie): number {
   for (const lang of langs) {
     const a3t = toAlpha3T(lang);
     const a3b = toAlpha3B(lang);
-    const locName = getName(lang, LANG);
-    const enName = getName(lang, "en");
+    const locName = getName(lang, LANG)!.toLowerCase();
+    const enName = getName(lang, "en")!.toLowerCase();
 
     if (
       loweredName.match(

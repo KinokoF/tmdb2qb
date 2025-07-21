@@ -8,6 +8,6 @@ import { COUNTRY, LANG } from "./constants.js";
 export const LANG_TAG = `${LANG}-${COUNTRY}`;
 export const LANG_A3B = toAlpha3B(LANG);
 export const LANG_A3T = toAlpha3T(LANG);
-export const LANG_LOC_NAME = getName(LANG, LANG);
-export const LANG_EN_NAME = getName(LANG, "en");
+export const LANG_LOC_NAME = getName(LANG, LANG)!.toLowerCase();
+export const LANG_EN_NAME = getName(LANG, "en")!.toLowerCase();
 export const LANGS = LANG_A3B === LANG_A3T ? [LANG_A3B] : [LANG_A3B, LANG_A3T];
