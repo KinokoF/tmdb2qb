@@ -21,11 +21,8 @@ export async function chooseGroup(
   );
 
   const res = await retryOnError(
-    async () =>
-      await chat({
-        model: OI_MODEL,
-        messages: [{ role: "user", content: prompt }],
-      }),
+    () =>
+      chat({ model: OI_MODEL, messages: [{ role: "user", content: prompt }] }),
     3,
     5 * 60_000
   );

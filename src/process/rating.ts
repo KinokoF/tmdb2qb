@@ -100,15 +100,22 @@ export function calcRating(name: string, movie: TinyMovie): number {
   const langs = new Set(compLangs);
 
   for (const lang of langs) {
-    const a3t = toAlpha3T(lang);
-    const a3b = toAlpha3B(lang);
-    const locName = getName(lang, LANG)!.toLowerCase();
-    const enName = getName(lang, "en")!.toLowerCase();
+    const langArray = [toAlpha3T(lang), toAlpha3B(lang)];
+    const locName = getName(lang, LANG);
+    const enName = getName(lang, "en");
+
+    if (locName) {
+      langArray.push(locName.toLowerCase());
+    }
+
+    if (enName) {
+      langArray.push(enName.toLowerCase());
+    }
+
+    const langString = langArray.join("|");
 
     if (
-      loweredName.match(
-        `([ _.([-]+|^)(${a3t}|${a3b}|${locName}|${enName})([ _.)\\]-]+|$)`
-      )?.length
+      loweredName.match(`([ _.([-]+|^)(${langString})([ _.)\\]-]+|$)`)?.length
     ) {
       rating += 100;
     }
