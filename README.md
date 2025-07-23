@@ -21,8 +21,8 @@ The application follows these steps:
 ### 1. Install and configure qBittorrent
 Install the latest version of qBittorrent, then apply the following configurations:
 - Downloads -> Check "Do not start the download automatically"
-- Downloads -> Select "Automatic" in the "Default torrent management mode" field
-- WebUI -> Check "Web User Interface (remote control)"
+- Downloads -> Select "Automatic" in the "Default Torrent Management Mode" field
+- WebUI -> Check "Web User Interface (Remote control)"
 - WebUI -> Enter a password in the "Password" field
 - WebUI -> Enter 999999 in the "Session timeout" field (arbitrarily high value)
 
