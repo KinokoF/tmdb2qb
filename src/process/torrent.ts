@@ -20,10 +20,11 @@ export async function startDownload(
     tags: [tag],
   });
 
-  await sleep(urls.length * 6_000);
+  await sleep(urls.length * 10_000);
 
   await loginQb();
   const torrents = (await qb.api.getTorrents({
+    category: CATEGORY_NAME,
     tag,
     sort: "added_on",
   })) as RawTorrentV2[];

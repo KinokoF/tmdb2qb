@@ -1,5 +1,5 @@
 import { RawTorrentV2 } from "../models/raw-torrent-v2.js";
-import { loginQb, qb } from "../clients/qb.js";
+import { deleteTorrents, loginQb, qb } from "../clients/qb.js";
 import { state } from "../state.js";
 import {
   CATEGORY_NAME,
@@ -92,18 +92,25 @@ async function searchAndDownloadMovie(
 export async function processMovies(): Promise<void> {
   console.log("[PROCESS] Start");
 
-  await loginQb();
-  const torrents = (await qb.api.getTorrents({
-    category: CATEGORY_NAME,
-  })) as RawTorrentV2[];
-
   const searchRetryTime = nowMinusDays(SEARCH_RETRY_INTERVAL_IN_DAYS);
   const staleTorrentTime = nowMinusDays(MAX_DAYS_TO_COMPLETE_DOWNLOAD);
 
   for (const movie of state.movies) {
-    const torrent = torrents.find((t) =>
-      t.tags.split(",").includes(getQbTag(movie))
-    );
+    await loginQb();
+    const torrents = (await qb.api.getTorrents({
+      category: CATEGORY_NAME,
+      tag: getQbTag(movie),
+      sort: "added_on",
+    })) as RawTorrentV2[];
+
+    if (torrents.length > 1) {
+      console.log(`[PROCESS] ${movie.title}; Remove duplicate torrents`);
+
+      const hashes = torrents.slice(1).map((t) => t.hash);
+      await deleteTorrents(hashes, false);
+    }
+
+    const torrent = torrents[0];
     const file = findFile(movie);
     const search = findUnsuccessSearch(movie);
 
@@ -123,7 +130,9 @@ export async function processMovies(): Promise<void> {
         console.log(`[PROCESS] ${movie.title}; Waiting for completion...`);
       }
     } else if (torrent && file) {
-      console.log(`[PROCESS] ${movie.title}; Cleanup`);
+      console.log(
+        `[PROCESS] ${movie.title}; Remove stray torrent (file already exists)`
+      );
 
       await deleteTorrent(torrent);
     }
