@@ -31,7 +31,7 @@ export function findFile(movie: TinyMovie): string | undefined {
 export function getQbTag(movie: TinyMovie): string {
   switch (movie.type) {
     case "movie":
-      return `tmdbid-${movie.id}`;
+      return `movie-${movie.id}`;
     case "tv":
       return `tv-${movie.id}`;
   }
