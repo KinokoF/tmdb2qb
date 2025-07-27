@@ -92,16 +92,19 @@ async function searchAndDownloadMovie(
 export async function processMovies(): Promise<void> {
   console.log("[PROCESS] Start");
 
+  await loginQb();
+  const allTorrents = (await qb.api.getTorrents({
+    category: CATEGORY_NAME,
+    sort: "added_on",
+  })) as RawTorrentV2[];
+
   const searchRetryTime = nowMinusDays(SEARCH_RETRY_INTERVAL_IN_DAYS);
   const staleTorrentTime = nowMinusDays(MAX_DAYS_TO_COMPLETE_DOWNLOAD);
 
   for (const movie of state.movies) {
-    await loginQb();
-    const torrents = (await qb.api.getTorrents({
-      category: CATEGORY_NAME,
-      tag: getQbTag(movie),
-      sort: "added_on",
-    })) as RawTorrentV2[];
+    const torrents = allTorrents.filter((t) =>
+      t.tags.includes(getQbTag(movie))
+    );
 
     if (torrents.length > 1) {
       console.log(`[PROCESS] ${movie.title}; Remove duplicate torrents`);
