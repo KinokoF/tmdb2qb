@@ -7,19 +7,19 @@ export const INITIAL_STATE: State = {
 };
 
 export const CATEGORY_NAME = "TMDB2qb";
-export const CATEGORY_DIR = "/mnt/HDD1/In download";
+export const CATEGORY_DIR = "/home/user/Scaricati/In download";
 
 export const LIBRARIES = [
-  { type: "movie", regex: /^./, dir: "/mnt/HDD1/Film" },
-  { type: "tv", regex: /^./, dir: "/mnt/HDD2/Miniserie" },
-  // { type: "movie", regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
-  // { type: "movie", regex: /^./, dir: "/mnt/HDD1/Film (0-M)" },
+  // { type: "movie", regex: /^./, dir: "/mnt/HDD1/Film" },
+  { type: "tv", regex: /^./, dir: "/mnt/HDD2/Miniserie (v2)" },
+  { type: "movie", regex: /^[n-z]/i, dir: "/mnt/HDD2/Film (N-Z)" },
+  { type: "movie", regex: /^./, dir: "/mnt/HDD1/Film (0-M)" },
 ];
 
-export const MOVIES_TO_FETCH = 1000;
+export const MOVIES_TO_FETCH = 8000;
 export const TVS_TO_FETCH = 100;
 
-export const MIN_VOTE_COUNT = 300;
+export const MIN_VOTE_COUNT = 200;
 
 export const MIN_DAYS_PASSED_SINCE_RELEASE = 30;
 export const SEARCH_RETRY_INTERVAL_IN_DAYS = 30;
