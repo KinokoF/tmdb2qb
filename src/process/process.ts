@@ -103,7 +103,7 @@ export async function processMovies(): Promise<void> {
 
   for (const movie of state.movies) {
     const torrents = allTorrents.filter((t) =>
-      t.tags.includes(getQbTag(movie))
+      t.tags.split(",").includes(getQbTag(movie))
     );
 
     if (torrents.length > 1) {
